@@ -1,0 +1,104 @@
+openapi: '3.0.3'
+info:
+  title: Cards of Keyforge
+  version: '0.1'
+servers:
+  - url: https://cardsofkeyforge.com/{basePath}
+    variables:
+      basePath:
+        default: v1
+paths:
+  /cards:
+    get:
+      summary: Returns all cards.
+      tags:
+        - cards
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cards"
+        500:
+          description: 'Internal error'
+
+    post:
+      summary: Add a card.
+      tags:
+        - cards
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Set"
+      responses:
+        '200':
+          description: 'OK'
+        500:
+          description: 'Internal error'
+        400:
+          description: 'Invalid request'
+  /cards/{id}:
+    get:
+      summary: Returns a card by ID.
+      tags:
+        - cards
+      parameters:
+        - in: path
+          name: id
+          required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+  /sets:
+    get:
+      summary: Returns all sets.
+      tags:
+        - sets
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Sets"
+        500:
+          description: 'Internal error'
+    post:
+      summary: Add a set.
+      tags:
+        - sets
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Set"
+      responses:
+        '200':
+          description: 'OK'
+        500:
+          description: 'Internal error'
+        400:
+          description: 'Invalid request'
+
+components:
+  schemas:
+    Card:
+      type: object
+    Cards:
+      type: array
+      items:
+        $ref: "#/components/schemas/Card"
+    Set:
+      type: object
+    Sets:
+      type: array
+      items:
+        $ref: "#/components/schemas/Set"

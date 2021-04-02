@@ -1,0 +1,24 @@
+language: go
+
+before_install:
+  - make install_deps
+
+script:
+  - golint cmd
+  - make build_all
+  - make zip_functions
+
+
+deploy:
+  - provider: lambda
+    function_name: "retrieve-card"
+    region: "eu-north-1"
+    role: "arn:aws:iam::329814883837:role/lambda_basic_execution"
+    runtime: "go1.x"
+    zip: "build/retrieve_card.zip"
+    module_name: ""
+    handler_name: "retrieve_card/main"
+    edge: true
+    on:
+      tags: false
+      branch: main
