@@ -42,6 +42,12 @@ paths:
           description: 'Invalid request'
   /cards/{id}:
     get:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        uri: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${!GetAtt RetrieveCard.Arn}/invocations
+        connectionType: INTERNET
+        httpMethod: POST
+        credentials: ${!GetAtt LambdaExecutionRole.Arn}
       summary: Returns a card by ID.
       tags:
         - cards
@@ -56,38 +62,6 @@ paths:
             application/json:
               schema:
                 type: object
-  /sets:
-    get:
-      summary: Returns all sets.
-      tags:
-        - sets
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Sets"
-        500:
-          description: 'Internal error'
-    post:
-      summary: Add a set.
-      tags:
-        - sets
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Set"
-      responses:
-        '200':
-          description: 'OK'
-        500:
-          description: 'Internal error'
-        400:
-          description: 'Invalid request'
-
 components:
   schemas:
     Card:
