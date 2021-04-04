@@ -7,6 +7,9 @@ install_deps:
 build_all:
 	$(foreach f, $(FUNCTIONS), $(shell GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o build/$(f)/main cmd/$(f)/main.go))
 
+test_all:
+	go test -v ./...
+
 zip_functions:
 	find build -type d -execdir zip -r '{}.zip' '{}' \;
 

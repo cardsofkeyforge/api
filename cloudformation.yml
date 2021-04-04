@@ -3,48 +3,9 @@ Description: >-
   Cards of Keyforge backend template
 Resources:
 
-  # API GW configuration
-  KeyforgeApi:
-    Type: 'AWS::ApiGateway::RestApi'
-    Properties:
-      Name: Cards of Keyforge API
-      Description: API used for store and retrieve keyforge cards from a db
-      FailOnWarnings: true
-      BodyS3Location:
-        Bucket: 'cards-keyforge'
-        Key: 'openapi/openapi.yaml'
-      roleArn:
-
-  ApiGatewayAccount:
-    Type: 'AWS::ApiGateway::Account'
-    Properties:
-      CloudWatchRoleArn: !GetAtt
-        - ApiGatewayCloudWatchLogsRole
-        - Arn
-  KeyforgeApiStage:
-    DependsOn:
-      - ApiGatewayAccount
-    Type: 'AWS::ApiGateway::Stage'
-    Properties:
-      DeploymentId: !Ref ApiDeployment
-      MethodSettings:
-        - DataTraceEnabled: true
-          HttpMethod: '*'
-          LoggingLevel: INFO
-          ResourcePath: /*
-      RestApiId: !Ref KeyforgeApi
-      StageName: prod
-  ApiDeployment:
-    Type: 'AWS::ApiGateway::Deployment'
-    DependsOn:
-      - KeyforgeApi
-    Properties:
-      RestApiId: !Ref KeyforgeApi
-      StageName: prod
-
   # Lambda functions
   RetrieveCard:
-    Type: 'AWS::Lambda::Function'
+    Type: AWS::Lambda::Function
     Properties:
       Code:
         S3Bucket: 'cards-keyforge'
@@ -52,18 +13,16 @@ Resources:
       Description: fetch card
       FunctionName: retrieve-card
       Handler: retrieve_card/main
-      Role: !GetAtt
-        - LambdaExecutionRole
-        - Arn
+      Role: !GetAtt LambdaExecutionRole.Arn
       Runtime: go1.x
 
-  LambdaPermission:
+
+
+  AGWLambdaPermission:
     Type: 'AWS::Lambda::Permission'
     Properties:
-      Action: 'lambda:invokeFunction'
-      FunctionName: !GetAtt
-        - RetrieveCard
-        - Arn
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref RetrieveCard
       Principal: apigateway.amazonaws.com
       SourceArn: !Join
         - ''
@@ -118,6 +77,46 @@ Resources:
                   - 'logs:GetLogEvents'
                   - 'logs:FilterLogEvents'
                 Resource: '*'
+
+  # API GW configuration
+  KeyforgeApi:
+    Type: 'AWS::ApiGateway::RestApi'
+    Properties:
+      Name: Cards of Keyforge API
+      Description: API used for store and retrieve keyforge cards from a db
+      FailOnWarnings: true
+      Body:
+        Fn::Transform:
+          Name: AWS::Include
+          Parameters:
+            Location: s3://cards-keyforge/openapi/openapi.yaml
+
+  ApiGatewayAccount:
+    Type: 'AWS::ApiGateway::Account'
+    Properties:
+      CloudWatchRoleArn: !GetAtt
+        - ApiGatewayCloudWatchLogsRole
+        - Arn
+  KeyforgeApiStage:
+    DependsOn:
+      - ApiGatewayAccount
+    Type: 'AWS::ApiGateway::Stage'
+    Properties:
+      DeploymentId: !Ref ApiDeployment
+      MethodSettings:
+        - DataTraceEnabled: true
+          HttpMethod: '*'
+          LoggingLevel: INFO
+          ResourcePath: /*
+      RestApiId: !Ref KeyforgeApi
+      StageName: LATEST
+  ApiDeployment:
+    Type: 'AWS::ApiGateway::Deployment'
+    DependsOn:
+      - KeyforgeApi
+    Properties:
+      RestApiId: !Ref KeyforgeApi
+      StageName: prod
 
 Outputs:
   RootUrl:

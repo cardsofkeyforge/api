@@ -8,46 +8,15 @@ servers:
       basePath:
         default: v1
 paths:
-  /cards:
-    get:
-      summary: Returns all cards.
-      tags:
-        - cards
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Cards"
-        500:
-          description: 'Internal error'
-
-    post:
-      summary: Add a card.
-      tags:
-        - cards
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Set"
-      responses:
-        '200':
-          description: 'OK'
-        500:
-          description: 'Internal error'
-        400:
-          description: 'Invalid request'
   /cards/{id}:
     get:
       x-amazon-apigateway-integration:
         type: aws_proxy
-        uri: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${!GetAtt RetrieveCard.Arn}/invocations
+        uri:
+          Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RetrieveCard.Arn}/invocations
         connectionType: INTERNET
+        passthroughBehavior: NEVER
         httpMethod: POST
-        credentials: ${!GetAtt LambdaExecutionRole.Arn}
       summary: Returns a card by ID.
       tags:
         - cards
@@ -66,13 +35,4 @@ components:
   schemas:
     Card:
       type: object
-    Cards:
-      type: array
-      items:
-        $ref: "#/components/schemas/Card"
-    Set:
-      type: object
-    Sets:
-      type: array
-      items:
-        $ref: "#/components/schemas/Set"
+
