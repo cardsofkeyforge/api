@@ -2,7 +2,7 @@
 /*
 	install go get github.com/erning/gorun
 	run: gorun load_data.go -d <path> -l <cards_language>
- */
+*/
 package main
 
 import (
@@ -18,24 +18,82 @@ import (
 	"strings"
 )
 
+type Source struct {
+	Type    string `json:"type"`
+	Version string `json:"version"`
+	Url     string `json:"url"`
+}
+
+type Ruling struct {
+	Title  string `json:"title"`
+	Text   string `json:"text"`
+	Source Source `json:"source"`
+}
+
+type RulingJson struct {
+	*Ruling
+	Cards []string `json:"cards"`
+}
+
+func (c *RulingJson) UnmarshalJSON(data []byte) error {
+	type Alias RulingJson
+	aux := &struct {
+		*Alias
+		Cards []string
+	}{
+		Alias: (*Alias)(c),
+	}
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+	c.Cards = append(c.Cards, aux.Cards...)
+	return nil
+}
+
 type Card struct {
-	CardTitle  string `json:"card_title" dynamo:",hash" index:"set-index,range"` // Hash key, a.k.a. partition key
-	Set        string `json:"set" dynamo:",range" index:"set-index,hash"`        // Range key, a.k.a. sort key
-	Amber      int    `json:"amber"`
-	CardNumber string `json:"card_number"`
-	CardText   string `json:"card_text"`
-	CardType   string `json:"card_type"`
-	Expansion  int64  `json:"expansion"`
-	FlavorText string `json:"flavor_text"`
-	FrontImage string `json:"front_image"`
-	House      string `json:"house"`
-	Id         string `json:"id"`
-	IsAnomaly  bool   `json:"is_anomaly"`
-	IsMaverick bool   `json:"is_maverick"`
-	Power      string `json:"power"`
-	Rarity     string `json:"rarity"`
-	Traits     string `json:"traits"`
-	Errata     string `json:"errata"`
+	CardTitle   string   `json:"card_title" dynamo:",hash" index:"set-index,range"` // Hash key, a.k.a. partition key
+	Set         string   `json:"set" dynamo:",range" index:"set-index,hash"`        // Range key, a.k.a. sort key
+	Amber       int      `json:"amber"`
+	CardNumber  string   `json:"card_number"`
+	CardText    string   `json:"card_text"`
+	CardType    string   `json:"card_type"`
+	Expansion   int64    `json:"expansion"`
+	FlavorText  string   `json:"flavor_text"`
+	FrontImages []string `json:"front_images"`
+	Houses      []string `json:"houses"`
+	Id          string   `json:"id"`
+	IsAnomaly   bool     `json:"is_anomaly"`
+	IsMaverick  bool     `json:"is_maverick"`
+	Power       string   `json:"power"`
+	Rarity      string   `json:"rarity"`
+	Traits      string   `json:"traits"`
+	Errata      string   `json:"errata"`
+	Rulings     []Ruling `json:"rulings"`
+}
+
+func (c *Card) UnmarshalJSON(data []byte) error {
+	type Alias Card
+	aux := &struct {
+		FrontImage string `json:"front_image"`
+		House      string `json:"house"`
+		*Alias
+	}{
+		Alias: (*Alias)(c),
+	}
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+
+	if aux.House != "" {
+		c.Houses = make([]string, 0)
+		c.Houses = append(c.Houses, aux.House)
+	}
+	if aux.FrontImage != "" {
+		c.FrontImages = make([]string, 0)
+		c.FrontImages = append(c.FrontImages, aux.FrontImage)
+	}
+
+	return nil
 }
 
 func main() {
@@ -56,7 +114,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	cards := parseCards(files)
+	rulings, err := parseRulings(fmt.Sprintf("%srulings.json", *dir))
+	if err != nil {
+		fmt.Println(err.Error())
+		os.Exit(1)
+	}
+	cards := parseCards(&files, rulings)
 
 	sess, _ := session.NewSession(&aws.Config{Region: aws.String("eu-north-1")})
 	db := dynamo.New(sess)
@@ -82,8 +145,8 @@ func main() {
 	total := 0
 	for _, value := range *cards {
 		total += len(value)
-		for i, c := range value {
-			fmt.Printf("%d: saving %s into %s \n", i, c.CardTitle, tableName)
+		for _, c := range value {
+			fmt.Printf("saving %s into %s \n", c.CardTitle, tableName)
 			err = table.Put(c).Run()
 			if err != nil {
 				fmt.Println(err.Error())
@@ -99,50 +162,59 @@ func createTable(db *dynamo.DB, tableName string) error {
 	return err
 }
 
-func contains(list []string, value string) bool {
-	if len(list) == 0 {
-		return false
-	}
+func parseCards(files *[]string, rulings *[]RulingJson) *map[string]map[string]Card {
+	cards := make(map[string]map[string]Card)
 
-	for _, v := range list {
-		return v == value
-	}
-
-	return false
-}
-
-func parseCards(files []string) *map[string][]Card {
-	cards := make(map[string][]Card)
-	for _, v := range files {
+	for _, v := range *files {
 		if strings.Contains(v, "errata") || strings.Contains(v, "ruling") {
 			continue
 		} else {
+
 			var c Card
 
-			err := unmarshalJson(v, &c)
+			if err := unmarshal(v, &c); err != nil {
+				fmt.Printf("%v", err.Error())
+				os.Exit(1)
+			}
 
-			if err != nil {
-				fmt.Printf("%v", err)
+			for _, r := range *rulings {
+				if contains(r.Cards, c.Id) {
+					c.Rulings = append(c.Rulings, *r.Ruling)
+				}
 			}
 
 			split := strings.Split(v, "/")
 			set := split[len(split)-2]
 			c.Set = set
-			if cards[set] != nil {
-				cards[set] = append(cards[set], c)
-			} else {
-				slice := make([]Card, 0)
-				slice = append(slice, c)
-				cards[set] = slice
+
+			if _, ok := cards[set]; !ok {
+				cards[set] = make(map[string]Card)
 			}
 
+			if val, ok := cards[set][c.CardTitle]; ok {
+				c.Houses = append(c.Houses, val.Houses...)
+				c.FrontImages = append(c.FrontImages, val.FrontImages...)
+				cards[set][c.CardTitle] = c
+			} else {
+				cards[set][c.CardTitle] = c
+			}
 		}
 	}
-
 	return &cards
 }
 
-func unmarshalJson(file string, v *Card) error {
+func parseRulings(rulingsPath string) (*[]RulingJson, error) {
+	rs := make([]RulingJson, 0)
+
+	if err := unmarshal(rulingsPath, &rs); err != nil {
+		fmt.Printf("%v", err.Error())
+		os.Exit(1)
+	}
+
+	return &rs, nil
+}
+
+func unmarshal(file string, v interface{}) error {
 	data, err := ioutil.ReadFile(file)
 	if err != nil {
 		return err
@@ -151,7 +223,6 @@ func unmarshalJson(file string, v *Card) error {
 
 	return err
 }
-
 func getFileList(dir *string) ([]string, error) {
 
 	fileList := make([]string, 0)
@@ -167,4 +238,16 @@ func getFileList(dir *string) ([]string, error) {
 	}
 
 	return fileList, nil
+}
+
+func contains(list []string, value string) bool {
+	if len(list) == 0 {
+		return false
+	}
+
+	for _, v := range list {
+		return v == value
+	}
+
+	return false
 }
