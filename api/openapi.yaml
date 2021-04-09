@@ -7,8 +7,45 @@ servers:
     variables:
       basePath:
         default: v1
+
+x-amazon-apigateway-request-validators:
+  basic:
+    validateRequestBody: true
+    validateRequestParameters: true
+  params-only:
+    validateRequestBody: false
+    validateRequestParameters: true
+
+x-amazon-apigateway-request-validator: basic
+
 paths:
-  /cards/{id}:
+  /cards:
+    get:
+      x-amazon-apigateway-integration:
+        type: mock
+        uri:
+          Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RetrieveCard.Arn}/invocations
+        connectionType: INTERNET
+        passthroughBehavior: NEVER
+        httpMethod: POST
+      summary: Returns all cards.
+      tags:
+        - cards
+      parameters:
+        - in: header
+          name: Lang
+          required: false
+        - in: header
+          name: Tracking-Id
+          required: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+  /cards/{set}:
     get:
       x-amazon-apigateway-integration:
         type: aws_proxy
@@ -17,13 +54,82 @@ paths:
         connectionType: INTERNET
         passthroughBehavior: NEVER
         httpMethod: POST
-      summary: Returns a card by ID.
+      summary: Returns all cards for the provided set.
       tags:
         - cards
       parameters:
         - in: path
-          name: id
-          required: true
+          name: set
+          required: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+  /cards/{set}/{name}:
+    get:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        uri:
+          Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RetrieveCard.Arn}/invocations
+        connectionType: INTERNET
+        passthroughBehavior: NEVER
+        httpMethod: POST
+      summary: Returns a card for Set.
+      tags:
+        - cards
+      parameters:
+        - in: path
+          name: set
+          required: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+  /sets:
+    get:
+      x-amazon-apigateway-integration:
+        type: mock
+        uri:
+          Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RetrieveCard.Arn}/invocations
+        connectionType: INTERNET
+        passthroughBehavior: NEVER
+        httpMethod: POST
+      summary: Returns a card by Set.
+      tags:
+        - cards
+      parameters:
+        - in: path
+          name: set
+          required: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+  /sets/{set}:
+    get:
+      x-amazon-apigateway-integration:
+        type: mock
+        uri:
+          Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RetrieveCard.Arn}/invocations
+        connectionType: INTERNET
+        passthroughBehavior: NEVER
+        httpMethod: POST
+      summary: Returns a card by Set.
+      tags:
+        - cards
+      parameters:
+        - in: path
+          name: set
+          required: false
       responses:
         '200':
           description: OK

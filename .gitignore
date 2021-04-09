@@ -182,3 +182,5 @@ fabric.properties
 build/
 json/
 *.json
+cards/
+.aws-sam

@@ -11,11 +11,13 @@ import (
 	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/guregu/dynamo"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 type Source struct {
@@ -24,76 +26,37 @@ type Source struct {
 	Url     string `json:"url"`
 }
 
-type Ruling struct {
+type Rules struct {
 	Title  string `json:"title"`
 	Text   string `json:"text"`
 	Source Source `json:"source"`
 }
 
-type RulingJson struct {
-	*Ruling
-	Cards []string `json:"cards"`
-}
-
-func (c *RulingJson) UnmarshalJSON(data []byte) error {
-	type Alias RulingJson
-	aux := &struct {
-		*Alias
-		Cards []string
-	}{
-		Alias: (*Alias)(c),
-	}
-	if err := json.Unmarshal(data, &aux); err != nil {
-		return err
-	}
-	c.Cards = append(c.Cards, aux.Cards...)
-	return nil
+type House struct {
+	Id     string `json:"id"`
+	House  string `json:"house"`
+	Normal string `json:"normal"`
+	Zoom   string `json:"zoom"`
 }
 
 type Card struct {
-	CardTitle   string   `json:"card_title" dynamo:",hash" index:"set-index,range"` // Hash key, a.k.a. partition key
-	Set         string   `json:"set" dynamo:",range" index:"set-index,hash"`        // Range key, a.k.a. sort key
-	Amber       int      `json:"amber"`
-	CardNumber  string   `json:"card_number"`
-	CardText    string   `json:"card_text"`
-	CardType    string   `json:"card_type"`
-	Expansion   int64    `json:"expansion"`
-	FlavorText  string   `json:"flavor_text"`
-	FrontImages []string `json:"front_images"`
-	Houses      []string `json:"houses"`
-	Id          string   `json:"id"`
-	IsAnomaly   bool     `json:"is_anomaly"`
-	IsMaverick  bool     `json:"is_maverick"`
-	Power       string   `json:"power"`
-	Rarity      string   `json:"rarity"`
-	Traits      string   `json:"traits"`
-	Errata      string   `json:"errata"`
-	Rulings     []Ruling `json:"rulings"`
-}
-
-func (c *Card) UnmarshalJSON(data []byte) error {
-	type Alias Card
-	aux := &struct {
-		FrontImage string `json:"front_image"`
-		House      string `json:"house"`
-		*Alias
-	}{
-		Alias: (*Alias)(c),
-	}
-	if err := json.Unmarshal(data, &aux); err != nil {
-		return err
-	}
-
-	if aux.House != "" {
-		c.Houses = make([]string, 0)
-		c.Houses = append(c.Houses, aux.House)
-	}
-	if aux.FrontImage != "" {
-		c.FrontImages = make([]string, 0)
-		c.FrontImages = append(c.FrontImages, aux.FrontImage)
-	}
-
-	return nil
+	CardTitle  string  `json:"card_title" dynamo:",hash" index:"set-index,range"` // Hash key, a.k.a. partition key
+	Set        string  `json:"set" dynamo:",range" index:"set-index,hash"`        // Range key, a.k.a. sort key
+	Amber      int     `json:"amber"`
+	CardNumber string  `json:"card_number"`
+	CardText   string  `json:"card_text"`
+	CardType   string  `json:"card_type"`
+	Expansion  int64   `json:"expansion"`
+	FlavorText string  `json:"flavor_text"`
+	Houses     []House `json:"houses"`
+	Id         string  `json:"id"`
+	IsAnomaly  bool    `json:"is_anomaly"`
+	IsMaverick bool    `json:"is_maverick"`
+	Power      string  `json:"power"`
+	Rarity     string  `json:"rarity"`
+	Traits     string  `json:"traits"`
+	Errata     string  `json:"errata"`
+	Rules      []Rules `json:"rules"`
 }
 
 func main() {
@@ -114,12 +77,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	rulings, err := parseRulings(fmt.Sprintf("%srulings.json", *dir))
-	if err != nil {
-		fmt.Println(err.Error())
-		os.Exit(1)
-	}
-	cards := parseCards(&files, rulings)
+	cards := parseCards(&files)
 
 	sess, _ := session.NewSession(&aws.Config{Region: aws.String("eu-north-1")})
 	db := dynamo.New(sess)
@@ -139,79 +97,61 @@ func main() {
 			fmt.Println(err.Error())
 			os.Exit(1)
 		}
+		time.Sleep(5 * time.Second)
+	}
+
+	fmt.Printf("Waiting for %s to be active...", tableName)
+
+	expectedStatus := "active"
+	var tableStatus string
+	for strings.ToLower(tableStatus) != expectedStatus {
+		t, _ := db.Client().DescribeTable(&dynamodb.DescribeTableInput{TableName: &tableName})
+		tableStatus = *t.Table.TableStatus
+		time.Sleep(1 * time.Second)
 	}
 
 	table := db.Table(tableName)
 	total := 0
-	for _, value := range *cards {
-		total += len(value)
-		for _, c := range value {
-			fmt.Printf("saving %s into %s \n", c.CardTitle, tableName)
-			err = table.Put(c).Run()
-			if err != nil {
-				fmt.Println(err.Error())
-			}
+	for _, c := range *cards {
+		fmt.Printf("saving %s into %s \n", c.CardTitle, tableName)
+		err = table.Put(c).Run()
+		if err != nil {
+			fmt.Println(err.Error())
 		}
+		total++
 	}
 	fmt.Printf("%d stored in %s", total, tableName)
 
 }
 
 func createTable(db *dynamo.DB, tableName string) error {
-	err := db.CreateTable(tableName, Card{}).Provision(5, 5).ProvisionIndex("set-index", 5, 5).Run()
+	err := db.CreateTable(tableName, Card{}).
+		Provision(5, 5).
+		ProvisionIndex("set-index", 5, 5).
+		Run()
 	return err
 }
 
-func parseCards(files *[]string, rulings *[]RulingJson) *map[string]map[string]Card {
-	cards := make(map[string]map[string]Card)
+func parseCards(files *[]string) *[]Card {
+	cards := make([]Card, 0)
 
 	for _, v := range *files {
-		if strings.Contains(v, "errata") || strings.Contains(v, "ruling") {
-			continue
-		} else {
 
-			var c Card
+		var c Card
 
-			if err := unmarshal(v, &c); err != nil {
-				fmt.Printf("%v", err.Error())
-				os.Exit(1)
-			}
-
-			for _, r := range *rulings {
-				if contains(r.Cards, c.Id) {
-					c.Rulings = append(c.Rulings, *r.Ruling)
-				}
-			}
-
-			split := strings.Split(v, "/")
-			set := split[len(split)-2]
-			c.Set = set
-
-			if _, ok := cards[set]; !ok {
-				cards[set] = make(map[string]Card)
-			}
-
-			if val, ok := cards[set][c.CardTitle]; ok {
-				c.Houses = append(c.Houses, val.Houses...)
-				c.FrontImages = append(c.FrontImages, val.FrontImages...)
-				cards[set][c.CardTitle] = c
-			} else {
-				cards[set][c.CardTitle] = c
-			}
+		if err := unmarshal(v, &c); err != nil {
+			fmt.Printf("%v", err.Error())
+			os.Exit(1)
 		}
+
+		split := strings.Split(v, "/")
+		set := split[len(split)-2]
+		c.Set = set
+
+		cards = append(cards, c)
 	}
+
 	return &cards
-}
-
-func parseRulings(rulingsPath string) (*[]RulingJson, error) {
-	rs := make([]RulingJson, 0)
-
-	if err := unmarshal(rulingsPath, &rs); err != nil {
-		fmt.Printf("%v", err.Error())
-		os.Exit(1)
-	}
-
-	return &rs, nil
 }
 
 func unmarshal(file string, v interface{}) error {

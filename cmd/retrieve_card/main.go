@@ -1,42 +1,53 @@
 package main
 
 import (
-	"context"
-	"encoding/json"
 	"fmt"
 	"github.com/aws/aws-lambda-go/events"
-	runtime "github.com/aws/aws-lambda-go/lambda"
+	"github.com/aws/aws-lambda-go/lambda"
 	_ "github.com/aws/aws-lambda-go/lambdacontext"
+	log "github.com/sirupsen/logrus"
+	"keyforge-cards-backend/internal/api"
+	"keyforge-cards-backend/internal/database"
+	"keyforge-cards-backend/internal/models"
+	"net/http"
+	"strings"
 )
 
-type Card struct {
-	Name   string `json:"name"`
-	Set    string `json:"set"`
-	Number string `json:"number"`
-}
+func handleRequest(event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	var results []models.Card
+	var tableName string
+	fb := database.FilterBuilder{}
 
-func handleRequest(ctx context.Context, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	parameters := event.PathParameters
-	id := parameters["id"]
-	set := parameters["set"]
-	bytes, _ := json.Marshal(Card{
-		Name:   "Cardzinho",
-		Set:    "Setzinho",
-		Number: id,
-	})
 
-	if set == "cota" {
-		return events.APIGatewayProxyResponse{
-			StatusCode: 200,
-			Body:       fmt.Sprintf("%s", bytes),
-		}, nil
+	name := event.PathParameters["name"]
+	set := event.PathParameters["set"]
+
+	if val, ok := event.Headers["Lang"]; ok {
+		tableName = fmt.Sprintf("cards_%s", val)
 	} else {
-		return events.APIGatewayProxyResponse{
-			StatusCode: 404,
-		}, nil
+		tableName = fmt.Sprintf("cards_%s", "pt")
 	}
+
+	expression, values, err := fb.Contains("CardTitle", strings.Title(strings.ToLower(name))).
+		And().
+		Eq("Set", strings.ToLower(set)).Build()
+
+	if err != nil {
+		log.Error(err.Error())
+		return api.Error(api.StatusCodeFromError(err), err.Error(), nil), err
+	}
+
+	err = database.Scan(tableName, expression, values, &results)
+
+	if err != nil {
+		log.Error(err.Error())
+		return api.Error(api.StatusCodeFromError(err), err.Error(), nil), err
+	}
+
+	return api.Response(http.StatusOK, nil, results), nil
+
 }
 
 func main() {
-	runtime.Start(handleRequest)
+	lambda.Start(handleRequest)
 }

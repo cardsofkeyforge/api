@@ -1,0 +1,9 @@
+Resources:
+  Function:
+    Type: AWS::Serverless::Function
+    Properties:
+      Timeout: 300
+      MemorySize: 128
+      Handler: handleRequest
+      CodeUri: /home/ab000115/github/personal/go/keyforge-cards-backend
+      Runtime: go1.x

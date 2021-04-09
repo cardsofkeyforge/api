@@ -1,6 +1,9 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: >-
   Cards of Keyforge backend template
+Parameters:
+  GithubHash:
+    Type: String
 Resources:
 
   # Lambda functions
@@ -9,7 +12,9 @@ Resources:
     Properties:
       Code:
         S3Bucket: 'cards-keyforge'
-        S3Key: 'functions/retrieve_card.zip'
+        S3Key: !Sub
+          - "functions/retrieve_card-${GH}.zip"
+          - { GH: !Ref GithubHash }
       Description: fetch card
       FunctionName: retrieve-card
       Handler: retrieve_card/main
@@ -85,7 +90,10 @@ Resources:
     Type: 'AWS::ApiGateway::RestApi'
     Properties:
       Name: Cards of Keyforge API
-      Description: API used for store and retrieve keyforge cards from a db
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+      Description: Keyforge cards database API
       FailOnWarnings: true
       Body:
         Fn::Transform:
@@ -120,6 +128,24 @@ Resources:
       RestApiId: !Ref KeyforgeApi
       StageName: prod
 
+  ApiCustomDomain:
+    Type: AWS::ApiGateway::DomainName
+    Properties:
+      DomainName: api.cardsofkeyforge.com
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+      RegionalCertificateArn: arn:aws:acm:eu-north-1:329814883837:certificate/e980974a-5f35-4944-b61f-0745c96cdd10
+      SecurityPolicy: TLS_1_2
+
+  ApiMappings:
+    Type: AWS::ApiGatewayV2::ApiMapping
+    Properties:
+      ApiId: !Ref KeyforgeApi
+      DomainName: !Ref ApiCustomDomain
+      Stage: prod
+
+
 Outputs:
   RootUrl:
     Description: Root URL of the API gateway
@@ -130,3 +156,8 @@ Outputs:
         - .execute-api.
         - !Ref 'AWS::Region'
         - .amazonaws.com
+  RetrieveCard:
+    Description: New function files
+    Value: !Sub
+      - functions/retrieve_card-${GH}.zip
+      - { GH: !Ref GithubHash }

@@ -7,6 +7,7 @@ on:
     types:
       - completed
 
+
 jobs:
 
   deploy:
@@ -27,7 +28,7 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: eu-north-1
 
-    - name: Update OpenAPI if changed
+    - name: Update OpenAPI
       uses: ItsKarma/aws-cli@v1.70.0
       with:
         args: s3 cp api/openapi.yaml s3://cards-keyforge/openapi/
@@ -57,3 +58,4 @@ jobs:
         name: cardsofkeyforge-backend
         template: cloudformation.yml
         capabilities: "CAPABILITY_AUTO_EXPAND,CAPABILITY_IAM"
+        parameter-overrides: GithubHash=${{ github.sha }}

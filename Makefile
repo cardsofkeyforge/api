@@ -11,5 +11,5 @@ test_all:
 	go test -v ./...
 
 zip_functions:
-	find build -type d -execdir zip -r '{}.zip' '{}' \;
+	find build -type d -execdir zip -r '{}-${GITHUB_SHA}.zip' '{}' \;
 
