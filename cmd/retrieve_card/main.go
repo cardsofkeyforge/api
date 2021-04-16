@@ -19,7 +19,7 @@ func handleRequest(event events.APIGatewayProxyRequest) (events.APIGatewayProxyR
 	fb := database.FilterBuilder{}
 
 
-	name := event.PathParameters["cardName"]
+	name := event.PathParameters["name"]
 	set := event.PathParameters["set"]
 
 	if val, ok := event.Headers["Lang"]; ok {
