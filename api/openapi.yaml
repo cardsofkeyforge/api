@@ -59,6 +59,7 @@ paths:
       parameters:
         - in: path
           name: set
+          description: "set short name (ex: cota)"
           required: false
       responses:
         '200':
@@ -69,7 +70,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Card'
-  /cards/{set}/{cardName}:
+  /cards/{set}/{name}:
     get:
       x-amazon-apigateway-integration:
         type: aws_proxy
@@ -78,15 +79,17 @@ paths:
         connectionType: INTERNET
         passthroughBehavior: NEVER
         httpMethod: POST
-      summary: Returns cards for {set} filtered by {cardName}.
+      summary: Returns cards for set filtered by the card name or partial name (fuzzy search).
       tags:
         - cards
       parameters:
         - in: path
           name: set
+          description: "set short name (ex: cota)"
           required: false
         - in: path
-          name: cardName
+          name: name
+          description: card name or partial name
           required: false
       responses:
         '200':
@@ -111,6 +114,7 @@ paths:
         - cards
       parameters:
         - in: path
+          description: "set short name (ex: cota)"
           name: set
           required: false
       responses:
@@ -137,6 +141,7 @@ paths:
       parameters:
         - in: path
           name: set
+          description: "set short name (ex: cota)"
           required: false
       responses:
         '200':
