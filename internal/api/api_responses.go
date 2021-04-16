@@ -29,7 +29,7 @@ func Error(statusCode int, message string, headers map[string]string) events.API
 func StatusCodeFromError(err error) int {
 	switch errors2.Cause(err).(type) {
 	case *dynamodb.ResourceNotFoundException:
-		return http.StatusNotFound
+		return http.StatusBadRequest
 	default:
 		return http.StatusInternalServerError
 	}

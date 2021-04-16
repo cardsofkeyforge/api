@@ -99,7 +99,7 @@ Resources:
         Fn::Transform:
           Name: AWS::Include
           Parameters:
-            Location: s3://cards-keyforge/openapi/openapi.yaml
+            Location: s3://swagger.cardsofkeyforge.com/openapi.yaml
 
   ApiGatewayAccount:
     Type: 'AWS::ApiGateway::Account'
@@ -145,6 +145,15 @@ Resources:
       DomainName: !Ref ApiCustomDomain
       Stage: prod
 
+  ApiRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: Z00673343JUANBEQK3AUL
+      Name: api.cardsofkeyforge.com
+      ResourceRecords:
+        - !GetAtt ApiCustomDomain.RegionalDomainName
+      TTL: '300'
+      Type: CNAME
 
 Outputs:
   RootUrl:

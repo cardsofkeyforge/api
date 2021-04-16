@@ -3,10 +3,7 @@ info:
   title: Cards of Keyforge
   version: '0.1'
 servers:
-  - url: https://cardsofkeyforge.com/{basePath}
-    variables:
-      basePath:
-        default: v1
+  - url: https://api.cardsofkeyforge.com
 
 x-amazon-apigateway-request-validators:
   basic:
@@ -44,7 +41,9 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/Card'
   /cards/{set}:
     get:
       x-amazon-apigateway-integration:
@@ -54,7 +53,7 @@ paths:
         connectionType: INTERNET
         passthroughBehavior: NEVER
         httpMethod: POST
-      summary: Returns all cards for the provided set.
+      summary: Returns all cards for {set}.
       tags:
         - cards
       parameters:
@@ -67,8 +66,10 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-  /cards/{set}/{name}:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Card'
+  /cards/{set}/{cardName}:
     get:
       x-amazon-apigateway-integration:
         type: aws_proxy
@@ -77,12 +78,15 @@ paths:
         connectionType: INTERNET
         passthroughBehavior: NEVER
         httpMethod: POST
-      summary: Returns a card for Set.
+      summary: Returns cards for {set} filtered by {cardName}.
       tags:
         - cards
       parameters:
         - in: path
           name: set
+          required: false
+        - in: path
+          name: cardName
           required: false
       responses:
         '200':
@@ -90,7 +94,9 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/Card'
   /sets:
     get:
       x-amazon-apigateway-integration:
@@ -100,7 +106,7 @@ paths:
         connectionType: INTERNET
         passthroughBehavior: NEVER
         httpMethod: POST
-      summary: Returns a card by Set.
+      summary: Returns all sets.
       tags:
         - cards
       parameters:
@@ -113,7 +119,9 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/Set'
   /sets/{set}:
     get:
       x-amazon-apigateway-integration:
@@ -123,7 +131,7 @@ paths:
         connectionType: INTERNET
         passthroughBehavior: NEVER
         httpMethod: POST
-      summary: Returns a card by Set.
+      summary: Returns a set.
       tags:
         - cards
       parameters:
@@ -136,9 +144,123 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/Card'
 components:
   schemas:
+    Source:
+      type: object
+      properties:
+        type:
+          type: string
+        version:
+          type: string
+        url:
+          type: string
+    Rules:
+      type: object
+      properties:
+        title:
+          type: string
+        text:
+          type: string
+        source:
+          $ref: '#/components/schemas/Source'
+    House:
+      type: object
+      properties:
+        id:
+          type: string
+        house:
+          type: string
+        normal:
+          type: string
+        zoom:
+          type: string
     Card:
       type: object
+      properties:
+        card_title:
+          type: string
+        set:
+          type: string
+        amber:
+          type: integer
+        card_number:
+          type: string
+        card_text:
+          type: string
+        card_type:
+          type: string
+        expansion:
+          type: integer
+        flavor_text:
+          type: string
+        houses:
+          type: array
+          items:
+            $ref: '#/components/schemas/House'
+        is_anomaly:
+          type: boolean
+        is_maverick:
+          type: boolean
+        power:
+          type: string
+        rarity:
+          type: string
+        traits:
+          type: string
+        errata:
+          type: string
+        rules:
+          type: array
+          items:
+            $ref: '#/components/schemas/Rules'
+    SetHouse:
+      type: object
+      properties:
+        name:
+          type: string
+        icon:
+          type: string
+    Map:
+      type: object
+      additionalProperties:
+        type: string
+    Set:
+      type: object
+      properties:
+        sequence:
+          type: string
+        longname:
+          type: string
+        code:
+          type: integer
+        developers:
+          type: array
+          items:
+            type: string
+        release:
+          type: string
+        new_count:
+          type: integer
+        name:
+          type: string
+        icon:
+          type: string
+        houses:
+          type: array
+          items:
+            $ref: '#/components/schemas/SetHouse'
+        langs:
+          type: object
+          items:
+            $ref: '#/components/schemas/Map'
+        designer:
+          type: string
+        card_count:
+          type: integer
+
+
+
+
 

@@ -31,7 +31,7 @@ jobs:
     - name: Update OpenAPI
       uses: ItsKarma/aws-cli@v1.70.0
       with:
-        args: s3 cp api/openapi.yaml s3://cards-keyforge/openapi/
+        args: s3 cp api/openapi.yaml s3://swagger.cardsofkeyforge.com/
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

@@ -1,40 +1,39 @@
 package models
 
 type Source struct {
-	Type    string `json:"type"`
-	Version string `json:"version"`
-	Url     string `json:"url"`
+	Type    string `json:"type,omitempty"`
+	Version string `json:"version,omitempty"`
+	Url     string `json:"url,omitempty"`
 }
 
 type Rules struct {
-	Title  string `json:"title"`
-	Text   string `json:"text"`
-	Source Source `json:"source"`
+	Title  string `json:"title,omitempty"`
+	Text   string `json:"text,omitempty"`
+	Source Source `json:"source,omitempty"`
 }
 
 type House struct {
-	Id     string `json:"id"`
-	House  string `json:"house"`
-	Normal string `json:"normal"`
-	Zoom   string `json:"zoom"`
+	Id     string `json:"id,omitempty"`
+	House  string `json:"house,omitempty"`
+	Normal string `json:"normal,omitempty"`
+	Zoom   string `json:"zoom,omitempty"`
 }
 
 type Card struct {
-	CardTitle  string  `json:"card_title" dynamo:",hash" index:"set-index,range"` // Hash key, a.k.a. partition key
-	Set        string  `json:"set" dynamo:",range" index:"set-index,hash"`        // Range key, a.k.a. sort key
-	Amber      int     `json:"amber"`
-	CardNumber string  `json:"card_number"`
-	CardText   string  `json:"card_text"`
-	CardType   string  `json:"card_type"`
-	Expansion  int64   `json:"expansion"`
-	FlavorText string  `json:"flavor_text"`
-	Houses     []House `json:"houses"`
-	Id         string  `json:"id"`
-	IsAnomaly  bool    `json:"is_anomaly"`
-	IsMaverick bool    `json:"is_maverick"`
-	Power      string  `json:"power"`
-	Rarity     string  `json:"rarity"`
-	Traits     string  `json:"traits"`
-	Errata     string  `json:"errata"`
-	Rules      []Rules `json:"rules"`
+	CardTitle  string  `json:"card_title,omitempty" dynamo:",hash" index:"set-index,range"` // Hash key, a.k.a. partition key
+	Set        string  `json:"set,omitempty" dynamo:",range" index:"set-index,hash"`        // Range key, a.k.a. sort key
+	Amber      int     `json:"amber,omitempty"`
+	CardNumber string  `json:"card_number,omitempty"`
+	CardText   string  `json:"card_text,omitempty"`
+	CardType   string  `json:"card_type,omitempty"`
+	Expansion  int64   `json:"expansion,omitempty"`
+	FlavorText string  `json:"flavor_text,omitempty"`
+	Houses     []House `json:"houses,omitempty"`
+	IsAnomaly  bool    `json:"is_anomaly,omitempty"`
+	IsMaverick bool    `json:"is_maverick,omitempty"`
+	Power      string  `json:"power,omitempty"`
+	Rarity     string  `json:"rarity,omitempty"`
+	Traits     string  `json:"traits,omitempty"`
+	Errata     string  `json:"errata,omitempty"`
+	Rules      []Rules `json:"rules,omitempty"`
 }
