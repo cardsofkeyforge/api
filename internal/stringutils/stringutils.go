@@ -1,4 +1,4 @@
-package commons
+package stringutils
 
 func Contains(list []string, value string) bool {
 	if len(list) == 0 {

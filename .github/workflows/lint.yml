@@ -5,7 +5,7 @@ on:
       - master
       - main
     paths:
-      - cmd
+      - lambda
       - test
       - internal
   pull_request:

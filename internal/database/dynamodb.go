@@ -24,7 +24,11 @@ func Scan(tableName string, expression *string, values *[]interface{}, result in
 		table := db.Table(tableName)
 		switch v := result.(type) {
 		default:
-			err := table.Scan().Filter(*expression, *values...).All(v)
+			if expression != nil {
+				err = table.Scan().Filter(*expression, *values...).All(v)
+			} else {
+				err = table.Scan().All(v)
+			}
 			return err
 		}
 	}

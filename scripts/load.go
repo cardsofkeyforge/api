@@ -1,7 +1,7 @@
 //#!/usr/bin/env gorun
 /*
 	install go get github.com/erning/gorun
-	run: gorun load_data.go -d <path> -l <cards_language>
+	run: gorun load.go -d <path> -l <cards_language>
 */
 package main
 

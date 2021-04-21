@@ -5,7 +5,7 @@ install_deps:
 	go get -u golang.org/x/lint/golint
 
 build_all:
-	$(foreach f, $(FUNCTIONS), $(shell GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o build/$(f)/main cmd/$(f)/main.go))
+	$(foreach f, $(FUNCTIONS), $(shell GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o build/$(f)/main lambda/$(f)/main.go))
 
 test_all:
 	go test -v ./...

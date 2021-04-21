@@ -1,7 +1,6 @@
 package database
 
 import (
-	"errors"
 	"fmt"
 	"strings"
 )
@@ -101,7 +100,7 @@ func (fb *FilterBuilder) BeginsWith(attribute string, val interface{}) *FilterBu
 	return fb
 }
 
-func (fb *FilterBuilder) Build() (expression *string, values *[]interface{}, err error) {
+func (fb *FilterBuilder) Build() (expression *string, values *[]interface{}) {
 	if len(fb.filterSlice) > 0 {
 		last := fb.filterSlice[len(fb.filterSlice)-1]
 
@@ -114,7 +113,8 @@ func (fb *FilterBuilder) Build() (expression *string, values *[]interface{}, err
 		expression = &join
 		values = &fb.valuesSlice
 	} else {
-		err = errors.New("no values to build")
+		return nil, nil
 	}
+
 	return
 }

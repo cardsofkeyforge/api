@@ -2,6 +2,9 @@ openapi: '3.0.3'
 info:
   title: Cards of Keyforge
   version: '0.1'
+  contact:
+    email: dreuse@dreuse.dev
+    name: dreuse
 servers:
   - url: https://api.cardsofkeyforge.com
 
@@ -19,78 +22,107 @@ paths:
   /cards:
     get:
       x-amazon-apigateway-integration:
-        type: mock
+        type: aws_proxy
         uri:
           Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RetrieveCard.Arn}/invocations
         connectionType: INTERNET
         passthroughBehavior: NEVER
         httpMethod: POST
-      summary: Returns all cards.
+      summary: Get all cards or filter through attributes.
       tags:
         - cards
       parameters:
         - in: header
           name: Lang
           required: false
+          description: the desired language for the cards defaults to pt
+          schema:
+            default: pt
+            type: string
         - in: header
-          name: Tracking-Id
+          name: traceparent
           required: false
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Card'
-  /cards/{set}:
-    get:
-      x-amazon-apigateway-integration:
-        type: aws_proxy
-        uri:
-          Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RetrieveCard.Arn}/invocations
-        connectionType: INTERNET
-        passthroughBehavior: NEVER
-        httpMethod: POST
-      summary: Returns all cards for {set}.
-      tags:
-        - cards
-      parameters:
-        - in: path
+          description: identifier for distributed tracing purposes
+          schema:
+            type: string
+        - in: query
           name: set
-          description: "set short name (ex: cota)"
+          description: set short name
           required: false
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Card'
-  /cards/{set}/{name}:
-    get:
-      x-amazon-apigateway-integration:
-        type: aws_proxy
-        uri:
-          Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RetrieveCard.Arn}/invocations
-        connectionType: INTERNET
-        passthroughBehavior: NEVER
-        httpMethod: POST
-      summary: Returns cards for set filtered by the card name or partial name (fuzzy search).
-      tags:
-        - cards
-      parameters:
-        - in: path
-          name: set
-          description: "set short name (ex: cota)"
+          schema:
+            enum:
+              - aoa
+              - cota
+              - dt
+              - mm
+              - wc
+        - in: query
+          name: amber
+          description: search cards with number of ambers equal or greater than
           required: false
-        - in: path
+          schema:
+            type: integer
+        - in: query
           name: name
-          description: card name or partial name
+          description: card's full or partial name
           required: false
+          schema:
+            type: string
+        - in: query
+          name: type
+          description: card type
+          required: false
+          schema:
+            enum:
+              - action
+              - artifact
+              - creature
+              - upgrade
+              - the_tide
+        - in: query
+          name: house
+          description: card's house
+          required: false
+          schema:
+            enum:
+              - brobnar
+              - dis
+              - logos
+              - mars
+              - sanctum
+              - saurian
+              - shadows
+              - star_alliance
+              - untamed
+              - unfathomable
+        - in: query
+          name: anomaly
+          description: if card is anomaly
+          required: false
+          schema:
+            type: boolean
+        - in: query
+          name: maverick
+          description: if card is maverick
+          required: false
+          schema:
+            type: boolean
+        - in: query
+          name: rarity
+          description: card rarity
+          required: false
+          schema:
+            enum:
+              - common
+              - uncommon
+              - rare
+              - variant
+        - in: query
+          name: power
+          description: search cards with power equal or greater than some value
+          required: false
+          schema:
+            type: integer
       responses:
         '200':
           description: OK
@@ -100,6 +132,49 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Card'
+        '400':
+          description: Bad request
+
+  /cards/{id}:
+    get:
+      x-amazon-apigateway-integration:
+        type: mock
+        uri:
+          Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RetrieveCard.Arn}/invocations
+        connectionType: INTERNET
+        passthroughBehavior: NEVER
+        httpMethod: POST
+      summary: get a single card by id
+      tags:
+        - cards
+      parameters:
+        - in: header
+          name: Lang
+          required: false
+          description: the desired language for the cards defaults to pt
+          schema:
+            type: string
+        - in: header
+          name: traceparent
+          required: false
+          description: identifier for distributed tracing purposes
+          schema:
+            type: string
+        - in: path
+          name: id
+          description: card id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Card'
+        '404':
+          description: Not found
   /sets:
     get:
       x-amazon-apigateway-integration:
