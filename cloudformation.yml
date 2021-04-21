@@ -7,17 +7,17 @@ Parameters:
 Resources:
 
   # Lambda functions
-  RetrieveCard:
+  GetCards:
     Type: AWS::Lambda::Function
     Properties:
       Code:
         S3Bucket: 'cards-keyforge'
         S3Key: !Sub
-          - "functions/retrieve_card-${GH}.zip"
+          - "functions/getcards-${GH}.zip"
           - { GH: !Ref GithubHash }
       Description: fetch card
-      FunctionName: retrieve-card
-      Handler: retrieve_card/main
+      FunctionName: getcards
+      Handler: getcards/main
       Role: !GetAtt LambdaExecutionRole.Arn
       Runtime: go1.x
 
@@ -27,7 +27,7 @@ Resources:
     Type: 'AWS::Lambda::Permission'
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName: !Ref RetrieveCard
+      FunctionName: !Ref GetCards
       Principal: apigateway.amazonaws.com
       SourceArn: !Join
         - ''
@@ -165,8 +165,8 @@ Outputs:
         - .execute-api.
         - !Ref 'AWS::Region'
         - .amazonaws.com
-  RetrieveCard:
+  GetCards:
     Description: New function files
     Value: !Sub
-      - functions/retrieve_card-${GH}.zip
+      - functions/getcards-${GH}.zip
       - { GH: !Ref GithubHash }
