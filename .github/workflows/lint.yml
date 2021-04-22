@@ -5,9 +5,9 @@ on:
       - master
       - main
     paths:
-      - lambda
-      - test
-      - internal
+      - "lambda/**"
+      - "test/**"
+      - "internal/**"
   pull_request:
 jobs:
   golangci:
