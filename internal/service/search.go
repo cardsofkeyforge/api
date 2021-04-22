@@ -11,10 +11,17 @@ import (
 )
 
 func SearchCards(event events.APIGatewayProxyRequest) (*[]model.Card, error) {
+	var table string
 	results := make([]model.Card, 0)
 	cards := make([]model.Card, 0)
 	cr := api.NewCardRequest(&event)
-	table := fmt.Sprintf("cards_%s", event.Headers["Lang"])
+
+	if val, ok := event.Headers["Lang"]; ok {
+		table = fmt.Sprintf("cards_%s", val)
+	} else {
+		table = "cards_pt"
+	}
+
 
 	filter, values, err := cr.Filter()
 	if err != nil {
