@@ -26,7 +26,7 @@ paths:
         uri:
           Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetCards.Arn}/invocations
         connectionType: INTERNET
-        passthroughBehavior: WHEN_NO_MATCH
+        passthroughBehavior: NEVER
         httpMethod: POST
       summary: Get all cards or filter through attributes.
       tags:
@@ -135,96 +135,96 @@ paths:
         '400':
           description: Bad request
 
-  /cards/{id}:
-    get:
-      x-amazon-apigateway-integration:
-        type: mock
-        uri:
-          Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetCards.Arn}/invocations
-        connectionType: INTERNET
-        passthroughBehavior: NEVER
-        httpMethod: POST
-      summary: get a single card by id
-      tags:
-        - cards
-      parameters:
-        - in: header
-          name: Lang
-          required: false
-          description: the desired language for the cards defaults to pt
-          schema:
-            type: string
-        - in: header
-          name: traceparent
-          required: false
-          description: identifier for distributed tracing purposes
-          schema:
-            type: string
-        - in: path
-          name: id
-          description: card id
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                  $ref: '#/components/schemas/Card'
-        '404':
-          description: Not found
-  /sets:
-    get:
-      x-amazon-apigateway-integration:
-        type: mock
-        uri:
-          Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetCards.Arn}/invocations
-        connectionType: INTERNET
-        passthroughBehavior: NEVER
-        httpMethod: POST
-      summary: Returns all sets.
-      tags:
-        - cards
-      parameters:
-        - in: path
-          description: "set short name (ex: cota)"
-          name: set
-          required: false
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Set'
-  /sets/{set}:
-    get:
-      x-amazon-apigateway-integration:
-        type: mock
-        uri:
-          Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetCards.Arn}/invocations
-        connectionType: INTERNET
-        passthroughBehavior: NEVER
-        httpMethod: POST
-      summary: Returns a set.
-      tags:
-        - cards
-      parameters:
-        - in: path
-          name: set
-          description: "set short name (ex: cota)"
-          required: false
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Card'
+#  /cards/{id}:
+#    get:
+#      x-amazon-apigateway-integration:
+#        type: mock
+#        uri:
+#          Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetCards.Arn}/invocations
+#        connectionType: INTERNET
+#        passthroughBehavior: NEVER
+#        httpMethod: POST
+#      summary: get a single card by id
+#      tags:
+#        - cards
+#      parameters:
+#        - in: header
+#          name: Lang
+#          required: false
+#          description: the desired language for the cards defaults to pt
+#          schema:
+#            type: string
+#        - in: header
+#          name: traceparent
+#          required: false
+#          description: identifier for distributed tracing purposes
+#          schema:
+#            type: string
+#        - in: path
+#          name: id
+#          description: card id
+#          required: true
+#          schema:
+#            type: string
+#      responses:
+#        '200':
+#          description: OK
+#          content:
+#            application/json:
+#              schema:
+#                  $ref: '#/components/schemas/Card'
+#        '404':
+#          description: Not found
+#  /sets:
+#    get:
+#      x-amazon-apigateway-integration:
+#        type: mock
+#        uri:
+#          Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetCards.Arn}/invocations
+#        connectionType: INTERNET
+#        passthroughBehavior: NEVER
+#        httpMethod: POST
+#      summary: Returns all sets.
+#      tags:
+#        - cards
+#      parameters:
+#        - in: path
+#          description: "set short name (ex: cota)"
+#          name: set
+#          required: false
+#      responses:
+#        '200':
+#          description: OK
+#          content:
+#            application/json:
+#              schema:
+#                type: array
+#                items:
+#                  $ref: '#/components/schemas/Set'
+#  /sets/{set}:
+#    get:
+#      x-amazon-apigateway-integration:
+#        type: mock
+#        uri:
+#          Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetCards.Arn}/invocations
+#        connectionType: INTERNET
+#        passthroughBehavior: NEVER
+#        httpMethod: POST
+#      summary: Returns a set.
+#      tags:
+#        - cards
+#      parameters:
+#        - in: path
+#          name: set
+#          description: "set short name (ex: cota)"
+#          required: false
+#      responses:
+#        '200':
+#          description: OK
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/schemas/Card'
 components:
   schemas:
     Source:
