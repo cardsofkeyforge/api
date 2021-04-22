@@ -26,7 +26,6 @@ paths:
         uri:
           Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetCards.Arn}/invocations
         connectionType: INTERNET
-        passthroughBehavior: NEVER
         httpMethod: POST
       summary: Get all cards or filter through attributes.
       tags:

@@ -34,6 +34,8 @@ func SearchCards(event events.APIGatewayProxyRequest) (*[]model.Card, error) {
 				}
 			}
 		}
+	} else {
+		results = append(results, cards...)
 	}
 
 	if err != nil {
