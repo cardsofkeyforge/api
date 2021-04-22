@@ -10,6 +10,19 @@ import (
 	"keyforge-cards-backend/internal/model"
 )
 
+var houses = []string{
+	"Brobnar",
+	"Dis",
+	"Logos",
+	"Mars",
+	"Sanctum",
+	"Saurian",
+	"Shadows",
+	"Star Alliance",
+	"Untamed",
+	"Unfathomable",
+}
+
 func SearchCards(event events.APIGatewayProxyRequest) (*[]model.Card, error) {
 	var table string
 	results := make([]model.Card, 0)
@@ -22,18 +35,16 @@ func SearchCards(event events.APIGatewayProxyRequest) (*[]model.Card, error) {
 		table = "cards_pt"
 	}
 
-
 	filter, values, err := cr.Filter()
 	if err != nil {
 		log.Error(err.Error())
 		return &results, err
 	}
 
-
 	err = database.Scan(table, filter, values, &cards)
 
 	//TODO improve this
-	if cr.House != "" {
+	if cr.House != "" && isValidHouse(cr.House) {
 		for _, c := range cards {
 			for _, h := range c.Houses {
 				if h.House == cr.House {
@@ -63,4 +74,13 @@ func GetSet() {
 
 func SearchSets() {
 
+}
+
+func isValidHouse(house string) bool {
+	for _, h := range houses {
+		if h == house {
+			return true
+		}
+	}
+	return false
 }

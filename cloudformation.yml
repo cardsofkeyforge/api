@@ -100,7 +100,9 @@ Resources:
         Fn::Transform:
           Name: AWS::Include
           Parameters:
-            Location: s3://swagger.cardsofkeyforge.com/openapi.yaml
+            Location: !Sub
+              - "s3://cards-keyforge/openapi/openapi-${GH}.yaml"
+              - { GH: !Ref GithubHash }
 
   ApiGatewayAccount:
     Type: 'AWS::ApiGateway::Account'
