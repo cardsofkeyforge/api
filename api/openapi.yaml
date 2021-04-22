@@ -50,12 +50,7 @@ paths:
           description: set short name
           required: false
           schema:
-            enum:
-              - aoa
-              - cota
-              - dt
-              - mm
-              - wc
+            type: string
         - in: query
           name: amber
           description: search cards with number of ambers equal or greater than
@@ -73,28 +68,13 @@ paths:
           description: card type
           required: false
           schema:
-            enum:
-              - action
-              - artifact
-              - creature
-              - upgrade
-              - the_tide
+            type: string
         - in: query
           name: house
           description: card's house
           required: false
           schema:
-            enum:
-              - brobnar
-              - dis
-              - logos
-              - mars
-              - sanctum
-              - saurian
-              - shadows
-              - star_alliance
-              - untamed
-              - unfathomable
+            type: string
         - in: query
           name: anomaly
           description: if card is anomaly
@@ -112,11 +92,7 @@ paths:
           description: card rarity
           required: false
           schema:
-            enum:
-              - common
-              - uncommon
-              - rare
-              - variant
+            type: string
         - in: query
           name: power
           description: search cards with power equal or greater than some value
