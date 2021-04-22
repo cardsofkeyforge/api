@@ -1,6 +1,19 @@
 name: build
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+      - main
+    paths:
+      - lambda
+      - test
+      - internal
+  pull_request:
+    paths:
+      - lambda
+      - test
+      - internal
 
 jobs:
 
