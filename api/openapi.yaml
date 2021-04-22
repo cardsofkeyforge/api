@@ -24,7 +24,7 @@ paths:
       x-amazon-apigateway-integration:
         type: aws_proxy
         uri:
-          Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RetrieveCard.Arn}/invocations
+          Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetCards.Arn}/invocations
         connectionType: INTERNET
         passthroughBehavior: NEVER
         httpMethod: POST
@@ -140,7 +140,7 @@ paths:
       x-amazon-apigateway-integration:
         type: mock
         uri:
-          Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RetrieveCard.Arn}/invocations
+          Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetCards.Arn}/invocations
         connectionType: INTERNET
         passthroughBehavior: NEVER
         httpMethod: POST
@@ -180,7 +180,7 @@ paths:
       x-amazon-apigateway-integration:
         type: mock
         uri:
-          Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RetrieveCard.Arn}/invocations
+          Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetCards.Arn}/invocations
         connectionType: INTERNET
         passthroughBehavior: NEVER
         httpMethod: POST
@@ -206,7 +206,7 @@ paths:
       x-amazon-apigateway-integration:
         type: mock
         uri:
-          Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RetrieveCard.Arn}/invocations
+          Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetCards.Arn}/invocations
         connectionType: INTERNET
         passthroughBehavior: NEVER
         httpMethod: POST
