@@ -6,16 +6,16 @@ on:
       - master
       - main
     paths:
-      - lambda
-      - test
-      - internal
-      - api
+      - "lambda/**"
+      - "test/**"
+      - "internal/**"
+      - "api/**"
   pull_request:
     paths:
-      - lambda
-      - test
-      - internal
-      - api
+      - "lambda/**"
+      - "test/**"
+      - "internal/**"
+      - "api/**"
 
 jobs:
 

@@ -3,8 +3,8 @@ info:
   title: Cards of Keyforge
   version: '0.1'
   contact:
-    email: dreuse@dreuse.dev
-    name: dreuse
+    email: dreuse@dreuse.dev | alfoltran@gmail.com
+    name: dreuse | alfoltran
 servers:
   - url: https://api.cardsofkeyforge.com
 
