@@ -20,7 +20,8 @@ Resources:
       Handler: getcards/main
       Role: !GetAtt LambdaExecutionRole.Arn
       Runtime: go1.x
-
+      Timeout: 60
+      MemorySize: 512
 
 
   AGWLambdaPermission:
