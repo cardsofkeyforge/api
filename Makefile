@@ -1,4 +1,5 @@
-FUNCTIONS = $(shell  find cmd/* -type d -exec basename {} \;)
+FUNCTIONS = $(shell  find lambda/* -type d -exec basename {} \;)
+GITHUB_SHA = $(shell git rev-parse HEAD)
 
 install_deps:
 	go get -u github.com/aws/aws-lambda-go/lambda
@@ -11,5 +12,5 @@ test_all:
 	go test -v ./...
 
 zip_functions:
-	find build -type d -execdir zip -r '{}-${GITHUB_SHA}.zip' '{}' \;
+	find build/* -type d -execdir zip -r '{}-${GITHUB_SHA}.zip' '{}' \;
 
