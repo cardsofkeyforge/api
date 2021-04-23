@@ -1,15 +1,15 @@
 package tts
 
 type TransformTTS struct {
-	posX   float32
-	posY   float32
-	posZ   float32
-	rotX   float32
-	rotY   float32
-	rotZ   float32
-	scaleX float32
-	scaleY float32
-	scaleZ float32
+	PosX   float32 `json:"posX,omitempty"`
+	PosY   float32 `json:"posY,omitempty"`
+	PosZ   float32 `json:"posZ,omitempty"`
+	RotX   float32 `json:"rotX,omitempty"`
+	RotY   float32 `json:"rotY,omitempty"`
+	RotZ   float32 `json:"rotZ,omitempty"`
+	ScaleX float32 `json:"scaleX,omitempty"`
+	ScaleY float32 `json:"scaleY,omitempty"`
+	ScaleZ float32 `json:"scaleZ,omitempty"`
 }
 
 type CardTTS struct {
@@ -40,49 +40,49 @@ type ObjectTTS struct {
 	ObjectStates []DeckTTS
 }
 
-func defaultDeckTTS() DeckTTS {
+func DefaultDeckTTS() DeckTTS {
 	deckTTS := DeckTTS{
 		Name:             "DeckCustom",
 		ContainedObjects: nil,
 		DeckIDs:          nil,
 		CustomDeck:       nil,
 		Transform: TransformTTS{
-			posX:   0,
-			posY:   1,
-			posZ:   0,
-			rotX:   0,
-			rotY:   180,
-			rotZ:   180,
-			scaleX: 1.5,
-			scaleY: 1,
-			scaleZ: 1.5,
+			PosX:   0,
+			PosY:   1,
+			PosZ:   0,
+			RotX:   0,
+			RotY:   180,
+			RotZ:   180,
+			ScaleX: 1.5,
+			ScaleY: 1,
+			ScaleZ: 1.5,
 		},
 	}
 	return deckTTS
 }
 
-func defaultCardTTS(id int, name string, text string) CardTTS {
+func DefaultCardTTS(id int, name string, text string) CardTTS {
 	cardTTS := CardTTS{
 		CardID:      id,
 		Name:        "Card",
 		Nickname:    name,
 		Description: text,
 		Transform: TransformTTS{
-			posX:   0,
-			posY:   0,
-			posZ:   0,
-			rotX:   0,
-			rotY:   180,
-			rotZ:   180,
-			scaleX: 1,
-			scaleY: 1,
-			scaleZ: 1,
+			PosX:   0,
+			PosY:   0,
+			PosZ:   0,
+			RotX:   0,
+			RotY:   180,
+			RotZ:   180,
+			ScaleX: 1,
+			ScaleY: 1,
+			ScaleZ: 1,
 		},
 	}
 	return cardTTS
 }
 
-func defaultCardDataTTS(face string, back string) CardDataTTS {
+func DefaultCardDataTTS(face string, back string) CardDataTTS {
 	cardDataTTS := CardDataTTS{
 		FaceURL:      face,
 		BackURL:      back,
