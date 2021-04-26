@@ -23,57 +23,46 @@ var houses = []string{
 	"Unfathomable",
 }
 
-func SearchCards(event events.APIGatewayProxyRequest) (*[]model.Card, error) {
+func SearchCards(event events.APIGatewayProxyRequest) (result *[]model.Card, err error) {
 	var table string
-	results := make([]model.Card, 0)
 	cards := make([]model.Card, 0)
+
+	table = fmt.Sprintf("cards_%s", language(event))
 	cr := api.NewCardRequest(&event)
+	filter := cr.Filter()
 
-	if val, ok := event.Headers["Lang"]; ok {
-		table = fmt.Sprintf("cards_%s", val)
-	} else {
-		table = "cards_pt"
-	}
+	err = database.Scan(table, filter, &cards)
 
-	filter, values, err := cr.Filter()
 	if err != nil {
 		log.Error(err.Error())
-		return &results, err
+		return
 	}
 
-	err = database.Scan(table, filter, values, &cards)
+	houseFilter(cr, cards, result)
+	return
+}
 
-	//TODO improve this
+func houseFilter(cr *api.CardRequest, cards []model.Card, results *[]model.Card) []model.Card {
 	if cr.House != "" && isValidHouse(cr.House) {
 		for _, c := range cards {
 			for _, h := range c.Houses {
 				if h.House == cr.House {
-					results = append(results, c)
+					*results = append(*results, c)
 				}
 			}
 		}
 	} else {
-		results = append(results, cards...)
+		*results = append(*results, cards...)
 	}
+	return *results
+}
 
-	if err != nil {
-		log.Error(err.Error())
-		return &results, err
+func language(event events.APIGatewayProxyRequest) string {
+	if val, ok := event.Headers["Accept-Language"]; ok {
+		return val
+	} else {
+		return "pt"
 	}
-
-	return &results, nil
-}
-
-func GetCard() {
-
-}
-
-func GetSet() {
-
-}
-
-func SearchSets() {
-
 }
 
 func isValidHouse(house string) bool {

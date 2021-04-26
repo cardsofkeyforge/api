@@ -5,6 +5,11 @@ import (
 	"strings"
 )
 
+type Filter struct {
+	Expression      string
+	AttributeValues []interface{}
+}
+
 type FilterBuilder struct {
 	filterSlice []string
 	valuesSlice []interface{}
@@ -100,7 +105,7 @@ func (fb *FilterBuilder) BeginsWith(attribute string, val interface{}) *FilterBu
 	return fb
 }
 
-func (fb *FilterBuilder) Build() (expression *string, values *[]interface{}) {
+func (fb *FilterBuilder) Build() *Filter {
 	if len(fb.filterSlice) > 0 {
 		last := fb.filterSlice[len(fb.filterSlice)-1]
 
@@ -110,11 +115,12 @@ func (fb *FilterBuilder) Build() (expression *string, values *[]interface{}) {
 		}
 
 		join := strings.Join(fb.filterSlice, " ")
-		expression = &join
-		values = &fb.valuesSlice
-	} else {
-		return nil, nil
+
+		return &Filter{
+			Expression:      join,
+			AttributeValues: fb.valuesSlice,
+		}
 	}
 
-	return
+	return nil
 }

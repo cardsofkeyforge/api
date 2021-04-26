@@ -33,7 +33,7 @@ paths:
         - cards
       parameters:
         - in: header
-          name: Lang
+          name: Accept-Language
           required: false
           description: the desired language for the cards defaults to pt
           schema:

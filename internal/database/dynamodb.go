@@ -17,15 +17,15 @@ func New() (dynamodb.DB, error) {
 	return db, nil
 }
 
-func Scan(tableName string, expression *string, values *[]interface{}, result interface{}) error {
+func Scan(tableName string, filter *Filter, result interface{}) error {
 	if db, err := New(); err != nil {
 		return err
 	} else {
 		table := db.Table(tableName)
 		switch v := result.(type) {
 		default:
-			if expression != nil {
-				err = table.Scan().Filter(*expression, *values...).All(v)
+			if filter != nil {
+				err = table.Scan().Filter(filter.Expression, filter.AttributeValues...).All(v)
 			} else {
 				err = table.Scan().All(v)
 			}

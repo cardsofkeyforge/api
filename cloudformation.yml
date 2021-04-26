@@ -56,8 +56,9 @@ Resources:
               - 'sts:AssumeRole'
       ManagedPolicyArns:
         - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
-        - 'arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess'
-        - 'arn:aws:iam::aws:policy/AmazonS3FullAccess'
+        - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/cards_*'
+        - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/sets_*'
+        - 'arn:aws:s3:::cards-keyforge'
   ApiGatewayCloudWatchLogsRole:
     Type: 'AWS::IAM::Role'
     Properties:

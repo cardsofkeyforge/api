@@ -18,18 +18,14 @@ func Response(statusCode int, headers map[string]string, body interface{}) event
 	}
 }
 
-func Error(statusCode int, message string, headers map[string]string) events.APIGatewayProxyResponse {
-	return events.APIGatewayProxyResponse{
-		StatusCode: statusCode,
-		Headers:    headers,
-		Body:       fmt.Sprintf("{ %q : %s }", "message", message),
-	}
+func Error(statusCode int, headers map[string]string, message string, err error) events.APIGatewayProxyResponse {
+	return Response(statusCode, headers, fmt.Sprintf("{ %q : %q, %q : %q }", "message", message, "error", err.Error()))
 }
 
 func StatusCodeFromError(err error) int {
 	switch errors2.Cause(err).(type) {
 	case *dynamodb.ResourceNotFoundException:
-		return http.StatusBadRequest
+		return http.StatusNotFound
 	default:
 		return http.StatusInternalServerError
 	}

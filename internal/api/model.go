@@ -44,7 +44,7 @@ func NewCardRequest(request *events.APIGatewayProxyRequest) *CardRequest {
 	return &cr
 }
 
-func (cr *CardRequest) Filter() (filter *string, values *[]interface{}, err error) {
+func (cr *CardRequest) Filter() *database.Filter {
 	fb := database.FilterBuilder{}
 	if cr.Name != "" {
 		fb.Contains("CardTitle", cr.Name).And()
@@ -71,6 +71,5 @@ func (cr *CardRequest) Filter() (filter *string, values *[]interface{}, err erro
 		fb.Eq("IsMaverick", *cr.Maverick)
 	}
 
-	filter, values = fb.Build()
-	return
+	return fb.Build()
 }
