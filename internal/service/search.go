@@ -27,7 +27,7 @@ func SearchCards(event events.APIGatewayProxyRequest) (result *[]model.Card, err
 	var table string
 	cards := make([]model.Card, 0)
 
-	table = fmt.Sprintf("cards_%s", language(event))
+	table = fmt.Sprintf("cards-%s", language(event))
 	cr := api.NewCardRequest(&event)
 	filter := cr.Filter()
 

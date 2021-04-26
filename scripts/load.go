@@ -88,7 +88,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	tableName := fmt.Sprintf("cards_%s", *lang)
+	tableName := fmt.Sprintf("cards-%s", *lang)
 	if !contains(tables, tableName) {
 		fmt.Printf("table %s does not exist, trying to create it\n", tableName)
 		err = createTable(db, tableName)
