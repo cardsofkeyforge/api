@@ -15,7 +15,7 @@ func handleRequest(event events.APIGatewayProxyRequest) (events.APIGatewayProxyR
 
 	if err != nil {
 		log.Error(err.Error())
-		return api.Error(api.StatusCodeFromError(err), err.Error(), nil), err
+		return api.Error(api.StatusCodeFromError(err), nil, "failed to fetch cards", err), err
 	}
 
 	return api.Response(http.StatusOK, nil, cards), nil
