@@ -23,8 +23,10 @@ var houses = []string{
 	"Unfathomable",
 }
 
-func SearchCards(event events.APIGatewayProxyRequest) (result *[]model.Card, err error) {
+func SearchCards(event events.APIGatewayProxyRequest) (*[]model.Card, error) {
 	var table string
+	var err error
+	result := make([]model.Card, 0)
 	cards := make([]model.Card, 0)
 
 	table = fmt.Sprintf("cards-%s", language(event))
@@ -35,11 +37,11 @@ func SearchCards(event events.APIGatewayProxyRequest) (result *[]model.Card, err
 
 	if err != nil {
 		log.Error(err.Error())
-		return
+		return &cards, err
 	}
 
-	houseFilter(cr, cards, result)
-	return
+	houseFilter(cr, cards, &result)
+	return &result, err
 }
 
 func houseFilter(cr *api.CardRequest, cards []model.Card, results *[]model.Card) []model.Card {
