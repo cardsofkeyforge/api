@@ -54,11 +54,34 @@ Resources:
                 - apigateway.amazonaws.com
             Action:
               - 'sts:AssumeRole'
+      Policies:
+        - PolicyName: DynamoDBAccessPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Sid: ReadOnly
+                Effect: Allow
+                Action:
+                  - dynamodb:BatchGet*
+                  - dynamodb:DescribeTable
+                  - dynamodb:Get*
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                Resource:
+                  - !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/cards_*"
+                  - !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/sets_*"
+        - PolicyName: S3AccessPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: s3:*
+                Resource:
+                  - arn:aws:s3:::cards-keyforge
+                  - arn:aws:s3:::cards-keyforge/*
       ManagedPolicyArns:
         - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
-        - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/cards_*'
-        - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/sets_*'
-        - 'arn:aws:s3:::cards-keyforge'
+
   ApiGatewayCloudWatchLogsRole:
     Type: 'AWS::IAM::Role'
     Properties:
