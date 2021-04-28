@@ -1,13 +1,14 @@
 package service
 
 import (
+	"fmt"
 	log "keyforge-cards-backend/internal/logging"
 	"keyforge-cards-backend/internal/model/tts"
 	"keyforge-cards-backend/internal/model/vault"
 	"strconv"
 )
 
-func ImportDeck(id string, lang string) (*tts.ObjectTTS, error) {
+func ImportDeck(id string, lang string, sleeve string) (*tts.ObjectTTS, error) {
 	vaultDeck, err := RetrieveDeck(id, lang)
 	if err != nil {
 		log.Error(err.Error())
@@ -41,7 +42,9 @@ func ImportDeck(id string, lang string) (*tts.ObjectTTS, error) {
 		if lastCardName != card.Title {
 			idx++
 			lastCardName = card.Title
-			currDeck.CustomDeck[strconv.Itoa(idx)] = tts.DefaultCardDataTTS("", "")
+			backImage := fmt.Sprintf("https://raw.githubusercontent.com/cardsofkeyforge/json/master/decks/assets/%sBack.png", sleeve)
+			// TODO RETRIEVE FRONT IMAGE FROM DATABASE
+			currDeck.CustomDeck[strconv.Itoa(idx)] = tts.DefaultCardDataTTS("", backImage)
 		}
 
 		// TODO ADD CARD TO CURR DECK
