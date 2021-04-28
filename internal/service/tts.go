@@ -15,6 +15,8 @@ func ImportDeck(id string, lang string, sleeve string) (*tts.ObjectTTS, error) {
 		return nil, err
 	}
 
+	backImage := fmt.Sprintf("https://raw.githubusercontent.com/cardsofkeyforge/json/master/decks/assets/%sBack.png", sleeve)
+
 	mainDeck := tts.DefaultDeckTTS()
 	mainDeck.ContainedObjects = make([]tts.CardTTS, 36)
 	mainDeck.DeckIDs = make([]int, 36)
@@ -42,7 +44,6 @@ func ImportDeck(id string, lang string, sleeve string) (*tts.ObjectTTS, error) {
 		if lastCardName != card.Title {
 			idx++
 			lastCardName = card.Title
-			backImage := fmt.Sprintf("https://raw.githubusercontent.com/cardsofkeyforge/json/master/decks/assets/%sBack.png", sleeve)
 			// TODO RETRIEVE FRONT IMAGE FROM DATABASE
 			currDeck.CustomDeck[strconv.Itoa(idx)] = tts.DefaultCardDataTTS("", backImage)
 		}
