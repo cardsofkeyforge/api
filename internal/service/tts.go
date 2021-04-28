@@ -27,13 +27,14 @@ func ImportDeck(id string, lang string) (*tts.ObjectTTS, error) {
 		card := filterCard(cardId, &vaultDeck.Info.Cards)
 		currDeck := &mainDeck
 		if card.NonDeck {
-			sideDeckData := tts.DefaultDeckTTS()
-			sideDeckData.ContainedObjects = make([]tts.CardTTS, 0)
-			sideDeckData.DeckIDs = make([]int, 0)
-			sideDeckData.CustomDeck = make(map[string]tts.CardDataTTS)
-			sideDeck = &sideDeckData
+			if sideDeck == nil {
+				sideDeckData := tts.DefaultDeckTTS()
+				sideDeckData.ContainedObjects = make([]tts.CardTTS, 0)
+				sideDeckData.DeckIDs = make([]int, 0)
+				sideDeckData.CustomDeck = make(map[string]tts.CardDataTTS)
+				sideDeck = &sideDeckData
+			}
 			currDeck = sideDeck
-			// TODO SIDE DECK
 		}
 
 		if lastCardName != card.Title {
@@ -42,7 +43,7 @@ func ImportDeck(id string, lang string) (*tts.ObjectTTS, error) {
 			currDeck.CustomDeck[strconv.Itoa(idx)] = tts.DefaultCardDataTTS("", "")
 		}
 
-		// TODO MAIN DECK
+		// TODO ADD CARD TO CURR DECK
 	}
 
 	ttsDeck := tts.ObjectTTS{
