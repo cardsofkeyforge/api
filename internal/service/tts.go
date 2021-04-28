@@ -33,6 +33,7 @@ func ImportDeck(id string, lang string) (*tts.ObjectTTS, error) {
 				sideDeckData.DeckIDs = make([]int, 0)
 				sideDeckData.CustomDeck = make(map[string]tts.CardDataTTS)
 				sideDeck = &sideDeckData
+				sideDeck.Transform.PosX = 5 // Shifts to the side
 			}
 			currDeck = sideDeck
 		}
