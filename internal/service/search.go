@@ -24,16 +24,13 @@ var houses = []string{
 }
 
 func SearchCards(event events.APIGatewayProxyRequest) (*[]model.Card, error) {
-	var table string
 	var err error
-	result := make([]model.Card, 0)
-	cards := make([]model.Card, 0)
+	result, cards := make([]model.Card, 0), make([]model.Card, 0)
 
-	table = fmt.Sprintf("cards-%s", language(event))
 	cr := api.NewCardRequest(&event)
 	filter := cr.Filter()
 
-	err = database.Scan(table, filter, &cards)
+	err = database.Scan(fmt.Sprintf("cards-%s", language(event)), filter, &cards)
 
 	if err != nil {
 		log.Error(err.Error())
