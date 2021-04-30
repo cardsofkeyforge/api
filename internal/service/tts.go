@@ -35,15 +35,15 @@ func ImportDeck(id string, lang string, sleeve string) (*tts.ObjectTTS, error) {
 	backImage := fmt.Sprintf("https://raw.githubusercontent.com/cardsofkeyforge/json/master/decks/assets/%sBack.png", sleeve)
 
 	mainDeck := tts.DefaultDeckTTS()
-	mainDeck.ContainedObjects = make([]tts.CardTTS, 36)
-	mainDeck.DeckIDs = make([]int, 36)
+	mainDeck.ContainedObjects = make([]tts.CardTTS, 0)
+	mainDeck.DeckIDs = make([]int, 0)
 	mainDeck.CustomDeck = make(map[string]tts.CardDataTTS)
 
 	sideDeck := (*tts.DeckTTS)(nil)
 
 	idx := 0
 	lastCardName := ""
-	for index, cardId := range vaultDeck.Data.InfoId.CardIds {
+	for _, cardId := range vaultDeck.Data.InfoId.CardIds {
 		card := filterCard(cardId, &vaultDeck.Info.Cards)
 		currDeck := &mainDeck
 		if card.NonDeck {
@@ -57,8 +57,8 @@ func ImportDeck(id string, lang string, sleeve string) (*tts.ObjectTTS, error) {
 
 				idx++
 				sideDeck.CustomDeck[strconv.Itoa(idx)] = tts.DefaultCardDataTTS(ruleImage, backImage)
-				sideDeck.ContainedObjects[index] = tts.DefaultCardTTS(idx*100, "Regras", "Guia de Referência Rápida")
-				sideDeck.DeckIDs[index] = idx * 100
+				sideDeck.ContainedObjects = append(sideDeck.ContainedObjects, tts.DefaultCardTTS(idx*100, "Regras", "Guia de Referência Rápida"))
+				sideDeck.DeckIDs = append(sideDeck.DeckIDs, idx*100)
 			}
 			currDeck = sideDeck
 		}
@@ -86,8 +86,8 @@ func ImportDeck(id string, lang string, sleeve string) (*tts.ObjectTTS, error) {
 			description += "\n" + "Propagada"
 		}
 
-		currDeck.ContainedObjects[index] = tts.DefaultCardTTS(idx*100, card.Title, description)
-		currDeck.DeckIDs[index] = idx * 100
+		currDeck.ContainedObjects = append(currDeck.ContainedObjects, tts.DefaultCardTTS(idx*100, card.Title, description))
+		currDeck.DeckIDs = append(currDeck.DeckIDs, idx*100)
 	}
 
 	ttsDeck := tts.ObjectTTS{
