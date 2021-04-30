@@ -11,6 +11,19 @@ import (
 	"strconv"
 )
 
+var houseNames = map[string]string{
+	"Brobnar":       "Brobnar",
+	"Dis":           "Dis",
+	"Logos":         "Logos",
+	"Mars":          "Marte",
+	"Sanctum":       "Santuário",
+	"Saurian":       "Sauro",
+	"Shadows":       "Sombras",
+	"Star Alliance": "Aliança Estelar",
+	"Untamed":       "Abissais",
+	"Unfathomable":  "Indomados",
+}
+
 func ImportDeck(id string, lang string, sleeve string) (*tts.ObjectTTS, error) {
 	vaultDeck, err := RetrieveDeck(id, lang)
 	if err != nil {
@@ -61,7 +74,7 @@ func ImportDeck(id string, lang string, sleeve string) (*tts.ObjectTTS, error) {
 		if card.NonDeck {
 			description = "Fora do Baralho"
 		} else {
-			description = card.House // TODO Translate
+			description = houseNames[card.House]
 		}
 		if card.Maverick {
 			description += "\n" + "Maverick"
