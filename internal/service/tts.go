@@ -66,8 +66,7 @@ func ImportDeck(id string, lang string, sleeve string) (*tts.ObjectTTS, error) {
 		if lastCardName != card.Title {
 			idx++
 			lastCardName = card.Title
-			currDeck.CustomDeck[strconv.Itoa(idx)] =
-				tts.DefaultCardDataTTS(zoomImage(card, lang), backImage)
+			currDeck.CustomDeck[strconv.Itoa(idx)] = tts.DefaultCardDataTTS(card.Image, backImage)
 		}
 
 		description := ""
@@ -105,10 +104,6 @@ func ImportDeck(id string, lang string, sleeve string) (*tts.ObjectTTS, error) {
 }
 
 func zoomImage(card *vault.CardVault, lang string) string {
-	return fmt.Sprintf("https://media/%s/%d/%s", lang, card.Expansion, card.Number)
-}
-
-func _zoomImage(card *vault.CardVault, lang string) string {
 	cr := api.OneCardRequest(int64(card.Expansion), card.Number)
 	filter := cr.Filter()
 
