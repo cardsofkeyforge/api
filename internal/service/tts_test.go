@@ -16,6 +16,7 @@ func TestImportDeck(t *testing.T) {
 		want    int
 		wantErr bool
 	}{
+		{"CotA", args{"ba1a3559-f377-40cb-9e8d-e61416b9c6b3", "pt", "red"}, 1, false},
 		{"DT", args{"2e1219ed-4740-4b91-b7b0-26d3ff44499a", "pt", "black"}, 2, false},
 	}
 	for _, tt := range tests {
