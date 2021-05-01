@@ -8,17 +8,16 @@ import (
 )
 
 type CardRequest struct {
-	Name      string
-	Number    string
-	Set       string
-	SetNumber int64
-	Amber     int
-	Type      string
-	Anomaly   *bool
-	Maverick  *bool
-	Rarity    string
-	Power     string
-	House     string
+	Name     string
+	Number   string
+	Set      string
+	Amber    int
+	Type     string
+	Anomaly  *bool
+	Maverick *bool
+	Rarity   string
+	Power    string
+	House    string
 }
 
 func NewCardRequest(request *events.APIGatewayProxyRequest) *CardRequest {
@@ -47,9 +46,9 @@ func NewCardRequest(request *events.APIGatewayProxyRequest) *CardRequest {
 	return &cr
 }
 
-func OneCardRequest(set int64, card string) *CardRequest {
+func OneCardRequest(set string, card string) *CardRequest {
 	cr := CardRequest{}
-	cr.SetNumber = set
+	cr.Set = set
 	cr.Number = card
 	return &cr
 }
@@ -64,9 +63,6 @@ func (cr *CardRequest) Filter() *database.Filter {
 	}
 	if cr.Set != "" {
 		fb.Eq("Set", cr.Set).And()
-	}
-	if cr.SetNumber > 0 {
-		fb.Eq("Expansion", cr.SetNumber).And()
 	}
 	if cr.Amber > 0 {
 		fb.Ge("Amber", cr.Amber).And()

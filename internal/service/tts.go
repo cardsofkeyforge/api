@@ -129,7 +129,7 @@ func zoomImage(card *vault.CardVault, lang string) string {
 }
 
 func zoomImageFromDB(card *vault.CardVault, lang string) string {
-	cr := api.OneCardRequest(int64(card.Expansion), card.Number)
+	cr := api.OneCardRequest(setCodes[card.Expansion], card.Number)
 	filter := cr.Filter()
 
 	cards := make([]model.Card, 0)
