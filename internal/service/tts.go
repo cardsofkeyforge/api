@@ -9,6 +9,7 @@ import (
 	"keyforge-cards-backend/internal/model/tts"
 	"keyforge-cards-backend/internal/model/vault"
 	"strconv"
+	"strings"
 )
 
 var houseNames = map[string]string{
@@ -20,8 +21,18 @@ var houseNames = map[string]string{
 	"Saurian":       "Sauro",
 	"Shadows":       "Sombras",
 	"Star Alliance": "Aliança Estelar",
-	"Untamed":       "Abissais",
-	"Unfathomable":  "Indomados",
+	"Untamed":       "Indomados",
+	"Unfathomable":  "Abissais",
+}
+
+var setCodes = map[int]string{
+	341:  "cota",
+	435:  "aoa",
+	452:  "wc",
+	453:  "anomaly",
+	479:  "mm",
+	496:  "dt",
+	1001: "rotk",
 }
 
 func ImportDeck(id string, lang string, sleeve string) (*tts.ObjectTTS, error) {
@@ -66,7 +77,7 @@ func ImportDeck(id string, lang string, sleeve string) (*tts.ObjectTTS, error) {
 		if lastCardName != card.Title {
 			idx++
 			lastCardName = card.Title
-			currDeck.CustomDeck[strconv.Itoa(idx)] = tts.DefaultCardDataTTS(card.Image, backImage)
+			currDeck.CustomDeck[strconv.Itoa(idx)] = tts.DefaultCardDataTTS(zoomImage(card, lang), backImage)
 		}
 
 		description := ""
@@ -104,7 +115,21 @@ func ImportDeck(id string, lang string, sleeve string) (*tts.ObjectTTS, error) {
 }
 
 func zoomImage(card *vault.CardVault, lang string) string {
-	cr := api.OneCardRequest(int64(card.Expansion), card.Number)
+	if card.Maverick {
+		return zoomImageFromDB(card, lang)
+	}
+
+	name := card.Number
+	if !card.Anomaly {
+		name = fmt.Sprintf("%s-%s", card.House, name)
+	}
+
+	return fmt.Sprintf("https://cards-keyforge.s3.eu-north-1.amazonaws.com/media/%s/%s/%s.png",
+		lang, setCodes[card.Expansion], strings.ReplaceAll(name, " ", ""))
+}
+
+func zoomImageFromDB(card *vault.CardVault, lang string) string {
+	cr := api.OneCardRequest(setCodes[card.Expansion], card.Number)
 	filter := cr.Filter()
 
 	cards := make([]model.Card, 0)
