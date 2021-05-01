@@ -66,8 +66,7 @@ func ImportDeck(id string, lang string, sleeve string) (*tts.ObjectTTS, error) {
 		if lastCardName != card.Title {
 			idx++
 			lastCardName = card.Title
-			currDeck.CustomDeck[strconv.Itoa(idx)] =
-				tts.DefaultCardDataTTS(zoomImage(card, lang), backImage)
+			currDeck.CustomDeck[strconv.Itoa(idx)] = tts.DefaultCardDataTTS(card.Image, backImage)
 		}
 
 		description := ""

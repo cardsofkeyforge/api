@@ -1,15 +1,15 @@
 package tts
 
 type TransformTTS struct {
-	PosX   float32 `json:"posX,omitempty"`
-	PosY   float32 `json:"posY,omitempty"`
-	PosZ   float32 `json:"posZ,omitempty"`
-	RotX   float32 `json:"rotX,omitempty"`
-	RotY   float32 `json:"rotY,omitempty"`
-	RotZ   float32 `json:"rotZ,omitempty"`
-	ScaleX float32 `json:"scaleX,omitempty"`
-	ScaleY float32 `json:"scaleY,omitempty"`
-	ScaleZ float32 `json:"scaleZ,omitempty"`
+	PosX   float32 `json:"posX"`
+	PosY   float32 `json:"posY"`
+	PosZ   float32 `json:"posZ"`
+	RotX   float32 `json:"rotX"`
+	RotY   float32 `json:"rotY"`
+	RotZ   float32 `json:"rotZ"`
+	ScaleX float32 `json:"scaleX"`
+	ScaleY float32 `json:"scaleY"`
+	ScaleZ float32 `json:"scaleZ"`
 }
 
 type CardTTS struct {
