@@ -105,6 +105,10 @@ func ImportDeck(id string, lang string, sleeve string) (*tts.ObjectTTS, error) {
 }
 
 func zoomImage(card *vault.CardVault, lang string) string {
+	return fmt.Sprintf("https://media/%s/%d/%s", lang, card.Expansion, card.Number)
+}
+
+func _zoomImage(card *vault.CardVault, lang string) string {
 	cr := api.OneCardRequest(int64(card.Expansion), card.Number)
 	filter := cr.Filter()
 
