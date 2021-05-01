@@ -80,22 +80,7 @@ func ImportDeck(id string, lang string, sleeve string) (*tts.ObjectTTS, error) {
 			currDeck.CustomDeck[strconv.Itoa(idx)] = tts.DefaultCardDataTTS(zoomImage(card, lang), backImage)
 		}
 
-		description := ""
-		if card.NonDeck {
-			description = "Fora do Baralho"
-		} else {
-			description = houseNames[card.House]
-		}
-		if card.Maverick {
-			description += "\n" + "Maverick"
-		}
-		if card.Anomaly {
-			description += "\n" + "Anomalia"
-		}
-		if card.Enhanced {
-			description += "\n" + "Propagada"
-		}
-
+		description := cardDescription(card)
 		currDeck.ContainedObjects = append(currDeck.ContainedObjects, tts.DefaultCardTTS(idx*100, card.Title, description))
 		currDeck.DeckIDs = append(currDeck.DeckIDs, idx*100)
 	}
@@ -112,6 +97,28 @@ func ImportDeck(id string, lang string, sleeve string) (*tts.ObjectTTS, error) {
 
 	ttsDeck.ObjectStates[0] = mainDeck
 	return &ttsDeck, nil
+}
+
+func cardDescription(card *vault.CardVault) string {
+	description := ""
+	if card.NonDeck {
+		description = "Fora do Baralho"
+	} else {
+		description = houseNames[card.House]
+	}
+	if card.Rarity == "Evil Twin" {
+		description += "\n" + "Gêmeo do Mal"
+	}
+	if card.Maverick {
+		description += "\n" + "Maverick"
+	}
+	if card.Anomaly {
+		description += "\n" + "Anomalia"
+	}
+	if card.Enhanced {
+		description += "\n" + "Propagada"
+	}
+	return description
 }
 
 func zoomImage(card *vault.CardVault, lang string) string {

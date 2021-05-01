@@ -8,11 +8,12 @@ import (
 	"keyforge-cards-backend/internal/api"
 	"keyforge-cards-backend/internal/service"
 	"net/http"
+	"strings"
 )
 
 func handleRequest(event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	parameters := event.QueryStringParameters
-	ttsObject, err := service.ImportDeck(parameters["deckid"], language(event), parameters["sleeve"])
+	ttsObject, err := service.ImportDeck(parameters["deckid"], language(event), defaultIfBlank(parameters["sleeve"], "red"))
 
 	if err != nil {
 		log.Error(err.Error())
@@ -27,6 +28,15 @@ func language(event events.APIGatewayProxyRequest) string {
 		return val
 	} else {
 		return "pt"
+	}
+}
+
+func defaultIfBlank(value string, defaultValue string) string {
+	trimmedValue := strings.TrimSpace(value)
+	if trimmedValue == "" {
+		return defaultValue
+	} else {
+		return trimmedValue
 	}
 }
 

@@ -9,6 +9,7 @@ type CardVault struct {
 	Text      string `json:"card_text,omitempty"`
 	Trail     string `json:"traits,omitempty"`
 	Number    string `json:"card_number,omitempty"`
+	Rarity    string `json:"rarity,omitempty"`
 	Expansion int    `json:"expansion,omitempty"`
 	Maverick  bool   `json:"is_maverick,omitempty"`
 	Anomaly   bool   `json:"is_anomaly,omitempty"`
