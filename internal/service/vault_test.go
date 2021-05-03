@@ -30,3 +30,29 @@ func TestRetrieveDeck(t *testing.T) {
 		})
 	}
 }
+
+func TestRetrieveRandomDeckId(t *testing.T) {
+	type args struct {
+		set int
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    int
+		wantErr bool
+	}{
+		{"All", args{0}, 36, false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := RetrieveRandomDeckId(tt.args.set)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("RetrieveRandomDeckId() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got == "" || len(got) != tt.want {
+				t.Errorf("RetrieveRandomDeckId() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
