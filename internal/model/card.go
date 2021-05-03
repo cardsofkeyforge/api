@@ -23,7 +23,7 @@ type Card struct {
 	CardTitle  string  `json:"card_title,omitempty"`
 	Set        string  `json:"set,omitempty" dynamo:",hash"`
 	Amber      int     `json:"amber,omitempty"`
-	CardNumber string  `json:"card_number,omitempty"  dynamo:",ra	nge"`
+	CardNumber string  `json:"card_number,omitempty"  dynamo:",range"`
 	CardText   string  `json:"card_text,omitempty"`
 	CardType   string  `json:"card_type,omitempty"`
 	Expansion  int64   `json:"expansion,omitempty"`
