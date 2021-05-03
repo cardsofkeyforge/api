@@ -53,16 +53,26 @@ func OneCardRequest(set string, card string) *CardRequest {
 	return &cr
 }
 
-func (cr *CardRequest) Filter() *database.Filter {
+func (cr *CardRequest) QueryFilter() *database.Filter {
+	filterBuilder := defaultBuilder(cr)
+	return filterBuilder.Build()
+}
+
+func (cr *CardRequest) ScanFilter() *database.Filter {
+	builder := defaultBuilder(cr)
+	if cr.Number != "" {
+		builder.Eq("CardNumber", cr.Number).And()
+	}
+	if cr.Set != "" {
+		builder.Eq("Set", cr.Set).And()
+	}
+	return builder.Build()
+}
+
+func defaultBuilder(cr *CardRequest) *database.FilterBuilder {
 	fb := database.FilterBuilder{}
 	if cr.Name != "" {
 		fb.Contains("CardTitle", cr.Name).And()
-	}
-	if cr.Number != "" {
-		fb.Eq("CardNumber", cr.Number).And()
-	}
-	if cr.Set != "" {
-		fb.Eq("Set", cr.Set).And()
 	}
 	if cr.Amber > 0 {
 		fb.Ge("Amber", cr.Amber).And()
@@ -82,6 +92,5 @@ func (cr *CardRequest) Filter() *database.Filter {
 	if cr.Maverick != nil {
 		fb.Eq("IsMaverick", *cr.Maverick)
 	}
-
-	return fb.Build()
+	return &fb
 }

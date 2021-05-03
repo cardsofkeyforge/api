@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"github.com/guregu/dynamo"
 	"keyforge-cards-backend/internal/api"
 	"keyforge-cards-backend/internal/database"
 	log "keyforge-cards-backend/internal/logging"
@@ -137,10 +138,20 @@ func zoomImage(card *vault.CardVault, lang string) string {
 
 func zoomImageFromDB(card *vault.CardVault, lang string) string {
 	cr := api.OneCardRequest(setCodes[card.Expansion], card.Number)
-	filter := cr.Filter()
+	filter := cr.QueryFilter()
 
 	cards := make([]model.Card, 0)
-	err := database.Scan(fmt.Sprintf("cards-%s", lang), filter, &cards)
+	qr := database.QueryRequest{
+		TableName:      fmt.Sprintf("cards-%s", lang),
+		Filter:         filter,
+		PartitionKey:   "Set",
+		PartitionValue: cr.Set,
+		RangeKey:       "CardNumber",
+		RangeOperator:  dynamo.Equal,
+		RangeValue:     cr.Number,
+	}
+
+	err := database.Query(&qr, &cards)
 
 	if err != nil {
 		log.Error(err.Error())

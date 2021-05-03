@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	"github.com/aws/aws-lambda-go/events"
+	"github.com/guregu/dynamo"
 	"keyforge-cards-backend/internal/api"
 	log "keyforge-cards-backend/internal/logging"
 
@@ -28,9 +29,30 @@ func SearchCards(event events.APIGatewayProxyRequest) (*[]model.Card, error) {
 	result, cards := make([]model.Card, 0), make([]model.Card, 0)
 
 	cr := api.NewCardRequest(&event)
-	filter := cr.Filter()
+	tableName := fmt.Sprintf("cards-%s", language(event))
 
-	err = database.Scan(fmt.Sprintf("cards-%s", language(event)), filter, &cards)
+	if cr.Set != "" {
+		filter := cr.QueryFilter()
+		qr := database.QueryRequest{
+			TableName:      tableName,
+			Filter:         filter,
+			PartitionKey:   "Set",
+			PartitionValue: cr.Set,
+		}
+		if cr.Number != "" {
+			qr.RangeKey = "CardNumber"
+			qr.RangeValue = cr.Number
+			qr.RangeOperator = dynamo.Equal
+		}
+		err = database.Query(&qr, &cards)
+	} else {
+		filter := cr.ScanFilter()
+		sr := database.ScanRequest{
+			TableName: tableName,
+			Filter:    filter,
+		}
+		err = database.Scan(&sr, &cards)
+	}
 
 	if err != nil {
 		log.Error(err.Error())
