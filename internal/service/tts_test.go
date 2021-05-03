@@ -1,6 +1,7 @@
 package service
 
 import (
+	"os"
 	"testing"
 )
 
@@ -19,7 +20,9 @@ func TestImportDeck(t *testing.T) {
 		{"CotA", args{"ba1a3559-f377-40cb-9e8d-e61416b9c6b3", "pt", "red"}, 1, false},
 		{"DT", args{"2e1219ed-4740-4b91-b7b0-26d3ff44499a", "pt", "black"}, 2, false},
 	}
-	t.Skip("Integration test!")
+	if os.Getenv("CI") == "true" {
+		t.Skip("Integration test!")
+	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := ImportDeck(tt.args.id, tt.args.lang, tt.args.sleeve)

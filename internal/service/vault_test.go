@@ -1,6 +1,7 @@
 package service
 
 import (
+	"os"
 	"testing"
 )
 
@@ -17,7 +18,9 @@ func TestRetrieveDeck(t *testing.T) {
 	}{
 		{"CotA", args{"67913327-8b9d-47f7-ad6b-cabfa166b30c", "pt"}, "Raimundo “Quebra-Galho”, o Voltaico", false},
 	}
-	t.Skip("Integration test!")
+	if os.Getenv("CI") == "true" {
+		t.Skip("Integration test!")
+	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := RetrieveDeck(tt.args.id, tt.args.lang)
@@ -44,7 +47,9 @@ func TestRetrieveRandomDeckId(t *testing.T) {
 	}{
 		{"All", args{0}, 36, false},
 	}
-	t.Skip("Integration test!")
+	if os.Getenv("CI") == "true" {
+		t.Skip("Integration test!")
+	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := RetrieveRandomDeckId(tt.args.set)
