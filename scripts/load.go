@@ -40,10 +40,10 @@ type House struct {
 }
 
 type Card struct {
-	CardTitle  string  `json:"card_title" dynamo:",hash" index:"set-index,range"` // Hash key, a.k.a. partition key
-	Set        string  `json:"set" dynamo:",range" index:"set-index,hash"`        // Range key, a.k.a. sort key
+	CardTitle  string  `json:"card_title"`
+	Set        string  `json:"set" dynamo:",hash"`
 	Amber      int     `json:"amber"`
-	CardNumber string  `json:"card_number"`
+	CardNumber string  `json:"card_number" dynamo:",range"`
 	CardText   string  `json:"card_text"`
 	CardType   string  `json:"card_type"`
 	Expansion  int64   `json:"expansion"`
@@ -57,6 +57,45 @@ type Card struct {
 	Traits     string  `json:"traits"`
 	Errata     string  `json:"errata"`
 	Rules      []Rules `json:"rules"`
+}
+
+func (c *Card) UnmarshalJSON(data []byte) error {
+	type Alias Card
+	aux := &struct {
+		Power interface{} `json:"power"`
+		*Alias
+	}{
+		Alias: (*Alias)(c),
+	}
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+
+	var power string
+	if aux.Power != nil && aux.Power != 0 {
+		power = fmt.Sprintf("%v", aux.Power)
+	} else {
+		power = "0"
+	}
+
+	c.CardTitle = aux.CardTitle
+	c.Set = aux.Set
+	c.Amber = aux.Amber
+	c.CardNumber = aux.CardNumber
+	c.CardText = aux.CardText
+	c.CardType = aux.CardType
+	c.Expansion = aux.Expansion
+	c.FlavorText = aux.FlavorText
+	c.Houses = aux.Houses
+	c.IsAnomaly = aux.IsAnomaly
+	c.IsMaverick = aux.IsMaverick
+	c.Power = power
+	c.Rarity = aux.Rarity
+	c.Traits = aux.Traits
+	c.Errata = aux.Errata
+	c.Rules = aux.Rules
+	return nil
+
 }
 
 func main() {
@@ -127,7 +166,6 @@ func main() {
 func createTable(db *dynamo.DB, tableName string) error {
 	err := db.CreateTable(tableName, Card{}).
 		Provision(5, 5).
-		ProvisionIndex("set-index", 5, 5).
 		Run()
 	return err
 }

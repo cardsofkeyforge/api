@@ -5,11 +5,6 @@ import (
 	"strings"
 )
 
-type Filter struct {
-	Expression      string
-	AttributeValues []interface{}
-}
-
 type FilterBuilder struct {
 	filterSlice []string
 	valuesSlice []interface{}
@@ -117,8 +112,8 @@ func (fb *FilterBuilder) Build() *Filter {
 		join := strings.Join(fb.filterSlice, " ")
 
 		return &Filter{
-			Expression:      join,
-			AttributeValues: fb.valuesSlice,
+			Expression:       join,
+			ExpressionValues: fb.valuesSlice,
 		}
 	}
 

@@ -20,10 +20,10 @@ type House struct {
 }
 
 type Card struct {
-	CardTitle  string  `json:"card_title,omitempty" dynamo:",hash" index:"set-index,range"` // Hash key, a.k.a. partition key
-	Set        string  `json:"set,omitempty" dynamo:",range" index:"set-index,hash"`        // Range key, a.k.a. sort key
+	CardTitle  string  `json:"card_title,omitempty"`
+	Set        string  `json:"set,omitempty" dynamo:",hash"`
 	Amber      int     `json:"amber,omitempty"`
-	CardNumber string  `json:"card_number,omitempty"`
+	CardNumber string  `json:"card_number,omitempty"  dynamo:",ra	nge"`
 	CardText   string  `json:"card_text,omitempty"`
 	CardType   string  `json:"card_type,omitempty"`
 	Expansion  int64   `json:"expansion,omitempty"`
