@@ -36,3 +36,8 @@ type DeckVault struct {
 	Data DeckDataVault `json:"data,omitempty"`
 	Info DeckLinkVault `json:"_linked,omitempty"`
 }
+
+type DecksVault struct {
+	Data    []DeckDataVault `json:"data,omitempty"`
+	Counter int             `json:"count,omitempty"`
+}

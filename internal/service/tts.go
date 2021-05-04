@@ -151,9 +151,7 @@ func zoomImageFromDB(card *vault.CardVault, lang string) string {
 		RangeValue:     cr.Number,
 	}
 
-	err := database.Query(&qr, &cards)
-
-	if err != nil {
+	if err := database.Query(&qr, &cards); err != nil {
 		log.Error(err.Error())
 		return ""
 	}
