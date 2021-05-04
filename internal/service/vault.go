@@ -63,11 +63,11 @@ func RetrieveDeck(id string, lang string) (*vault.DeckVault, error) {
 	return &vaultDeck, nil
 }
 
-func RetrieveRandomDeckId(set int) (string, error) {
+func RetrieveRandomDeckId(set int) (*vault.Deck, error) {
 	lastDeck, err := retrieveLastDecks(set, 1, 0)
 	if err != nil {
 		log.Error(err.Error())
-		return "", err
+		return nil, err
 	}
 
 	time.Sleep(200 * time.Millisecond)
@@ -76,14 +76,17 @@ func RetrieveRandomDeckId(set int) (string, error) {
 	deck, err := retrieveLastDecks(set, 1, deckOffset)
 	if err != nil {
 		log.Error(err.Error())
-		return "", err
+		return nil, err
 	}
 
+	vaultDeck := vault.Deck{}
 	if len(deck.Data) > 0 {
-		return deck.Data[0].Id, nil
+		vaultDeck.Id = deck.Data[0].Id
+		vaultDeck.Name = deck.Data[0].Name
+		vaultDeck.Expansion = deck.Data[0].Expansion
 	}
 
-	return "", nil
+	return &vaultDeck, nil
 }
 
 func retrieveLastDecks(set int, count int, offset int) (*vault.DecksVault, error) {

@@ -161,7 +161,7 @@ paths:
         connectionType: INTERNET
         passthroughBehavior: NEVER
         httpMethod: POST
-      summary: Returns a random Vault Deck ID from the Master Vault.
+      summary: Returns a random Vault Deck from the Master Vault.
       tags:
         - vault
         - deck
@@ -176,9 +176,9 @@ paths:
         '200':
           description: OK
           content:
-            text/plain:
+            application/json:
               schema:
-                type: string
+                type: object
         '400':
           description: Bad request
 

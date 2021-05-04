@@ -83,7 +83,7 @@ Resources:
         S3Key: !Sub
           - "functions/randomvaultdeck-${GH}.zip"
           - { GH: !Ref GithubHash }
-      Description: fetch vault random deck id
+      Description: fetch vault random deck
       FunctionName: randomvaultdeck
       Handler: randomvaultdeck/main
       Role: !GetAtt LambdaExecutionRole.Arn
