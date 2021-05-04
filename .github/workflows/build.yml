@@ -10,12 +10,14 @@ on:
       - "test/**"
       - "internal/**"
       - "api/**"
+      - "cloudformation.yml"
   pull_request:
     paths:
       - "lambda/**"
       - "test/**"
       - "internal/**"
       - "api/**"
+      - "cloudformation.yml"
 
 jobs:
 
