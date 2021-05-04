@@ -8,22 +8,34 @@ import (
 	log "keyforge-cards-backend/internal/logging"
 	"keyforge-cards-backend/internal/model/vault"
 	"math/rand"
+	"net"
 	"net/http"
+	"time"
 )
 
 func RetrieveDeck(id string, lang string) (*vault.DeckVault, error) {
 	url := fmt.Sprintf("https://www.keyforgegame.com/api/decks/%s?links=cards", id)
 	method := "GET"
 
-	client := &http.Client{}
-	req, err := http.NewRequest(method, url, nil)
+	transport := &http.Transport{
+		DialContext: (&net.Dialer{
+			Timeout: 5 * time.Second,
+		}).DialContext,
+		TLSHandshakeTimeout: 5 * time.Second,
+	}
 
+	client := &http.Client{
+		Timeout:   time.Second * 10,
+		Transport: transport,
+	}
+
+	req, err := http.NewRequest(method, url, nil)
 	if err != nil {
 		log.Error(err.Error())
 		return nil, err
 	}
-	req.Header.Add("Accept-Language", lang)
 
+	req.Header.Add("Accept-Language", lang)
 	res, err := client.Do(req)
 	if err != nil {
 		log.Error(err.Error())
@@ -31,8 +43,7 @@ func RetrieveDeck(id string, lang string) (*vault.DeckVault, error) {
 	}
 
 	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
+		if err := Body.Close(); err != nil {
 			log.Error(err.Error())
 		}
 	}(res.Body)
@@ -44,8 +55,7 @@ func RetrieveDeck(id string, lang string) (*vault.DeckVault, error) {
 	}
 
 	var vaultDeck vault.DeckVault
-	err = json.Unmarshal(body, &vaultDeck)
-	if err != nil {
+	if err = json.Unmarshal(body, &vaultDeck); err != nil {
 		log.Error(err.Error())
 		return nil, err
 	}
@@ -59,6 +69,8 @@ func RetrieveRandomDeckId(set int) (string, error) {
 		log.Error(err.Error())
 		return "", err
 	}
+
+	time.Sleep(200 * time.Millisecond)
 
 	deckOffset := rand.Intn(lastDeck.Counter-1) + 1
 	deck, err := retrieveLastDecks(set, 1, deckOffset)
@@ -83,9 +95,19 @@ func retrieveLastDecks(set int, count int, offset int) (*vault.DecksVault, error
 	url := fmt.Sprintf("https://www.keyforgegame.com/api/decks?page=%d&page_size=%d&ordering=-date%s", page, count, filter)
 	method := "GET"
 
-	client := &http.Client{}
-	req, err := http.NewRequest(method, url, nil)
+	transport := &http.Transport{
+		DialContext: (&net.Dialer{
+			Timeout: 5 * time.Second,
+		}).DialContext,
+		TLSHandshakeTimeout: 5 * time.Second,
+	}
 
+	client := &http.Client{
+		Timeout:   time.Second * 10,
+		Transport: transport,
+	}
+
+	req, err := http.NewRequest(method, url, nil)
 	if err != nil {
 		log.Error(err.Error())
 		return nil, err
@@ -98,8 +120,7 @@ func retrieveLastDecks(set int, count int, offset int) (*vault.DecksVault, error
 	}
 
 	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
+		if err := Body.Close(); err != nil {
 			log.Error(err.Error())
 		}
 	}(res.Body)
@@ -111,8 +132,7 @@ func retrieveLastDecks(set int, count int, offset int) (*vault.DecksVault, error
 	}
 
 	var lastDecks vault.DecksVault
-	err = json.Unmarshal(body, &lastDecks)
-	if err != nil {
+	if err = json.Unmarshal(body, &lastDecks); err != nil {
 		log.Error(err.Error())
 		return nil, err
 	}
