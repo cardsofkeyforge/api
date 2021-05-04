@@ -24,14 +24,14 @@ var setName = map[string]int{
 
 func handleRequest(event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	parameters := event.QueryStringParameters
-	deckId, err := service.RetrieveRandomDeckId(defaultIfBlank(parameters["set"], "all"))
+	deck, err := service.RetrieveRandomDeckId(defaultIfBlank(parameters["set"], "all"))
 
 	if err != nil {
 		log.Error(err.Error())
-		return api.Error(api.StatusCodeFromError(err), nil, "failed to fetch deck id", err), err
+		return api.Error(api.StatusCodeFromError(err), nil, "failed to fetch deck", err), err
 	}
 
-	return api.Response(http.StatusOK, nil, deckId), nil
+	return api.Response(http.StatusOK, nil, deck), nil
 }
 
 func defaultIfBlank(value string, defaultValue string) int {

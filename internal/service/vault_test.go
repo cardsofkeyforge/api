@@ -57,7 +57,7 @@ func TestRetrieveRandomDeckId(t *testing.T) {
 				t.Errorf("RetrieveRandomDeckId() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if got == "" || len(got) != tt.want {
+			if got == nil || len(got.Id) != tt.want {
 				t.Errorf("RetrieveRandomDeckId() got = %v, want %v", got, tt.want)
 			}
 		})

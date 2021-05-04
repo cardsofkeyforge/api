@@ -1,5 +1,11 @@
 package vault
 
+type Deck struct {
+	Id        string
+	Name      string
+	Expansion int
+}
+
 type CardVault struct {
 	Id        string `json:"id,omitempty"`
 	Title     string `json:"card_title,omitempty"`
