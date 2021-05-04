@@ -188,7 +188,7 @@ Resources:
         Types:
           - REGIONAL
       Description: Keyforge cards database API
-      FailOnWarnings: true
+      FailOnWarnings: false
       Body:
         Fn::Transform:
           Name: AWS::Include
