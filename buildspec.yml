@@ -7,7 +7,7 @@ phases:
       - go mod tidy
       - make test_all
       - make build_all
-      - make zip_binaries
+      - make zip_functions
 artifacts:
   files:
     - build/**/*.zip
