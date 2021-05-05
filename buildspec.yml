@@ -1,0 +1,14 @@
+version: 0.2
+phases:
+  build:
+    runtime-versions:
+      go: 1.x
+    commands:
+      - go mod tidy
+      - make test_all
+      - make build_all
+      - make zip_binaries
+artifacts:
+  files:
+    - build/**/*.zip
+
