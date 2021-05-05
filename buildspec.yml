@@ -1,8 +1,6 @@
 version: 0.2
 phases:
   build:
-    runtime-versions:
-      go: 1.x
     commands:
       - go mod tidy
       - make test_all
