@@ -54,7 +54,7 @@ func ImportDeck(id string, lang string, sleeve string) (*tts.ObjectTTS, error) {
 	sideDeck := (*tts.DeckTTS)(nil)
 
 	idx := 0
-	lastCardName := ""
+	lastCard := (*vault.CardVault)(nil)
 	for _, cardId := range vaultDeck.Data.InfoId.CardIds {
 		card := filterCard(cardId, &vaultDeck.Info.Cards)
 		currDeck := &mainDeck
@@ -75,9 +75,9 @@ func ImportDeck(id string, lang string, sleeve string) (*tts.ObjectTTS, error) {
 			currDeck = sideDeck
 		}
 
-		if lastCardName != card.Title {
+		if lastCard.Title != card.Title || lastCard.Type != card.Type {
 			idx++
-			lastCardName = card.Title
+			lastCard = card
 			currDeck.CustomDeck[strconv.Itoa(idx)] = tts.DefaultCardDataTTS(zoomImage(card, lang), backImage)
 		}
 
@@ -130,6 +130,12 @@ func zoomImage(card *vault.CardVault, lang string) string {
 	name := card.Number
 	if !card.Anomaly {
 		name = fmt.Sprintf("%s-%s", card.House, name)
+	}
+
+	if card.Type == "Creature1" {
+		name += "-1"
+	} else if card.Type == "Creature2" {
+		name += "-2"
 	}
 
 	return fmt.Sprintf("https://cards-keyforge.s3.eu-north-1.amazonaws.com/media/%s/%s/%s.png",
