@@ -75,7 +75,7 @@ func ImportDeck(id string, lang string, sleeve string) (*tts.ObjectTTS, error) {
 			currDeck = sideDeck
 		}
 
-		if lastCard.Title != card.Title || lastCard.Type != card.Type {
+		if lastCard == nil || lastCard.Title != card.Title || lastCard.Type != card.Type {
 			idx++
 			lastCard = card
 			currDeck.CustomDeck[strconv.Itoa(idx)] = tts.DefaultCardDataTTS(zoomImage(card, lang), backImage)
