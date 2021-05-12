@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/aws/aws-lambda-go/events"
 	"keyforge-cards-backend/internal/database"
+	"keyforge-cards-backend/internal/stringutils"
 	"strconv"
 	"strings"
 )
@@ -23,11 +24,11 @@ type CardRequest struct {
 func NewCardRequest(request *events.APIGatewayProxyRequest) *CardRequest {
 	cr := CardRequest{}
 	parameters := request.QueryStringParameters
-	cr.Name = strings.Title(strings.ToLower(parameters["name"]))
+	cr.Name = stringutils.EspecialTitle(parameters["name"])
 	cr.Number = parameters["number"]
 	cr.Set = strings.ToLower(parameters["set"])
 	cr.Type = strings.Title(strings.ToLower(strings.ReplaceAll(parameters["type"], "_", " ")))
-	cr.Rarity = strings.Title(strings.ToLower(parameters["rarity"]))
+	cr.Rarity = stringutils.EspecialTitle(parameters["rarity"])
 	cr.Power = parameters["power"]
 	cr.House = strings.Title(strings.ToLower(strings.ReplaceAll(parameters["house"], "_", " ")))
 
