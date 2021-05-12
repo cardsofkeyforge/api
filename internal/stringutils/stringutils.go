@@ -45,6 +45,11 @@ func EspecialTitle(value string) string {
 	replaceHead := func(word string) string {
 		if Contains(abbrvs, word) {
 			return strings.ToUpper(word)
+		} else {
+			special := specials[word]
+			if special != "" {
+				return special
+			}
 		}
 		return strings.Title(word)
 	}
