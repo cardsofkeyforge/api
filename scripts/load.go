@@ -49,10 +49,10 @@ type Card struct {
 	Expansion  int64   `json:"expansion"`
 	FlavorText string  `json:"flavor_text"`
 	Houses     []House `json:"houses"`
-	Id         string  `json:"id"`
 	IsAnomaly  bool    `json:"is_anomaly"`
 	IsMaverick bool    `json:"is_maverick"`
 	Power      string  `json:"power"`
+	Armor      string  `json:"armor"`
 	Rarity     string  `json:"rarity"`
 	Traits     string  `json:"traits"`
 	Errata     string  `json:"errata"`
@@ -63,6 +63,7 @@ func (c *Card) UnmarshalJSON(data []byte) error {
 	type Alias Card
 	aux := &struct {
 		Power interface{} `json:"power"`
+		Armor interface{} `json:"armor"`
 		*Alias
 	}{
 		Alias: (*Alias)(c),
@@ -78,6 +79,13 @@ func (c *Card) UnmarshalJSON(data []byte) error {
 		power = "0"
 	}
 
+	var armor string
+	if aux.Armor != nil && aux.Armor != 0 {
+		armor = fmt.Sprintf("%v", aux.Armor)
+	} else {
+		armor = "0"
+	}
+
 	c.CardTitle = aux.CardTitle
 	c.Set = aux.Set
 	c.Amber = aux.Amber
@@ -90,6 +98,7 @@ func (c *Card) UnmarshalJSON(data []byte) error {
 	c.IsAnomaly = aux.IsAnomaly
 	c.IsMaverick = aux.IsMaverick
 	c.Power = power
+	c.Armor = armor
 	c.Rarity = aux.Rarity
 	c.Traits = aux.Traits
 	c.Errata = aux.Errata
@@ -99,7 +108,6 @@ func (c *Card) UnmarshalJSON(data []byte) error {
 }
 
 func main() {
-
 	dir := flag.String("d", ".", "Directory to load data from")
 	lang := flag.String("l", "", "Required. The Language of the cards (pt, en, es...)")
 	flag.Parse()
@@ -202,7 +210,6 @@ func unmarshal(file string, v interface{}) error {
 	return err
 }
 func getFileList(dir *string) ([]string, error) {
-
 	fileList := make([]string, 0)
 	e := filepath.Walk(*dir, func(path string, f os.FileInfo, err error) error {
 		if strings.HasSuffix(path, ".json") {
