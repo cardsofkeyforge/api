@@ -18,6 +18,7 @@ type CardRequest struct {
 	Maverick *bool
 	Rarity   string
 	Power    string
+	Armor    string
 	House    string
 }
 
@@ -30,6 +31,7 @@ func NewCardRequest(request *events.APIGatewayProxyRequest) *CardRequest {
 	cr.Type = strings.Title(strings.ToLower(strings.ReplaceAll(parameters["type"], "_", " ")))
 	cr.Rarity = stringutils.EspecialTitle(parameters["rarity"])
 	cr.Power = parameters["power"]
+	cr.Armor = parameters["armor"]
 	cr.House = strings.Title(strings.ToLower(strings.ReplaceAll(parameters["house"], "_", " ")))
 
 	atoi, err := strconv.Atoi(parameters["amber"])
@@ -80,6 +82,9 @@ func defaultBuilder(cr *CardRequest) *database.FilterBuilder {
 	}
 	if cr.Power != "" {
 		fb.Ge("Power", cr.Power).And()
+	}
+	if cr.Armor != "" {
+		fb.Ge("Armor", cr.Armor).And()
 	}
 	if cr.Type != "" {
 		fb.Eq("CardType", cr.Type).And()

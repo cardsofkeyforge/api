@@ -99,6 +99,12 @@ paths:
           required: false
           schema:
             type: integer
+        - in: query
+          name: armor
+          description: search cards with armor equal or greater than some value
+          required: false
+          schema:
+            type: integer
       responses:
         '200':
           description: OK
@@ -241,6 +247,8 @@ components:
         is_maverick:
           type: boolean
         power:
+          type: string
+        armor:
           type: string
         rarity:
           type: string

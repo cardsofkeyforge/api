@@ -32,6 +32,7 @@ type Card struct {
 	IsAnomaly  bool    `json:"is_anomaly,omitempty"`
 	IsMaverick bool    `json:"is_maverick,omitempty"`
 	Power      string  `json:"power,omitempty"`
+	Armor      string  `json:"armor,omitempty"`
 	Rarity     string  `json:"rarity,omitempty"`
 	Traits     string  `json:"traits,omitempty"`
 	Errata     string  `json:"errata,omitempty"`
