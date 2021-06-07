@@ -13,12 +13,16 @@ import (
 func handleRequest(event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	cards, err := service.SearchCards(event)
 
-	if err != nil {
-		log.Error(err.Error())
-		return api.Error(api.StatusCodeFromError(err), nil, "failed to fetch cards", err), err
+	headers := map[string]string{
+		"Access-Control-Allow-Origin": "https://site.cardsofkeyforge.com",
 	}
 
-	return api.Response(http.StatusOK, nil, cards), nil
+	if err != nil {
+		log.Error(err.Error())
+		return api.Error(api.StatusCodeFromError(err), headers, "failed to fetch cards", err), err
+	}
+
+	return api.Response(http.StatusOK, headers, cards), nil
 }
 
 func main() {
