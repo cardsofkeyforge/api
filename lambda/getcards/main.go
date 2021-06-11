@@ -14,7 +14,9 @@ func handleRequest(event events.APIGatewayProxyRequest) (events.APIGatewayProxyR
 	cards, err := service.SearchCards(event)
 
 	headers := map[string]string{
-		"Access-Control-Allow-Origin": "https://site.cardsofkeyforge.com",
+		"Access-Control-Allow-Origin":  "https://site.cardsofkeyforge.com",
+		"Access-Control-Allow-Methods": "*",
+		"Access-Control-Allow-Headers": "*",
 	}
 
 	if err != nil {
