@@ -20,8 +20,8 @@ github.com/gofrs/uuid v4.2.0+incompatible h1:yyYWMnhkhrKwwr8gAOcOCYxOOscHgDS9yZg
 github.com/gofrs/uuid v4.2.0+incompatible/go.mod h1:b2aQJv3Z4Fp6yNu3cdSllBxTCLRxnplIgP/c0N/04lM=
 github.com/golang/mock v1.4.4/go.mod h1:l3mdAwkq5BuhzHwde/uurv3sEJeZMXNpwsxVWU71h+4=
 github.com/guregu/dynamo v1.9.1/go.mod h1:nN6eZeNSiD92T5IVTmEhO6pRZblJZ8cQ+0e0dVFExjc=
-github.com/guregu/dynamo v1.14.0 h1:AQ+02e0t0Wd6QqaTJ5tv6Go80NQz7bYoskX2lor6gyA=
-github.com/guregu/dynamo v1.14.0/go.mod h1:R5fw2cfeTXQgoIXNNvNIDKf+k6G65cKZ+IfFs0lGyUQ=
+github.com/guregu/dynamo v1.15.0 h1:ZPJAay1TVjpUNUixX5jgiclZrJ8X7gqFzIeBQnB0yPE=
+github.com/guregu/dynamo v1.15.0/go.mod h1:W2Gqcf3MtkrS+Q6fHPGAmRtT0Dyq+TGrqfqrUC9+R/c=
 github.com/jmespath/go-jmespath v0.3.0/go.mod h1:9QtRXoHjLGCJ5IBSaohpXITPlowMeeYCZ7fLUTSywik=
 github.com/jmespath/go-jmespath v0.4.0 h1:BEgLn5cpjn8UN1mAw4NjwDrS35OdebyEtFe+9YPoQUg=
 github.com/jmespath/go-jmespath v0.4.0/go.mod h1:T8mJZnbsbmF+m6zOOFylbeCJqk5+pHWvzYPziyZiYoo=
