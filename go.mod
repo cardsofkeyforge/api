@@ -8,6 +8,6 @@ require (
 	github.com/guregu/dynamo v1.15.1
 	github.com/kadekutama/dynamodb v1.0.0
 	github.com/pkg/errors v0.9.1
-	github.com/sirupsen/logrus v1.8.1
+	github.com/sirupsen/logrus v1.9.0
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
