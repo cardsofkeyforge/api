@@ -2,8 +2,8 @@ github.com/aws/aws-lambda-go v1.33.0 h1:n4kw3zie82vPpLLN58ahlYHBz9k8QeK2svQep+jG
 github.com/aws/aws-lambda-go v1.33.0/go.mod h1:jwFe2KmMsHmffA1X2R09hH6lFzJQxzI8qK17ewzbQMM=
 github.com/aws/aws-sdk-go v1.34.0/go.mod h1:5zCpMtNQVjRREroY7sYe8lOMRSxkhG6MZveU8YkpAk0=
 github.com/aws/aws-sdk-go v1.42.47/go.mod h1:OGr6lGMAKGlG9CVrYnWYDKIyb829c6EVBRjxqjmPepc=
-github.com/aws/aws-sdk-go v1.44.59 h1:bkdnNsMvMhFmNLqKDAJ6rKR+S0hjOt/3AIJp2mxOK9o=
-github.com/aws/aws-sdk-go v1.44.59/go.mod h1:y4AeaBuwd2Lk+GepC1E9v0qOiTws0MIWAX4oIKwKHZo=
+github.com/aws/aws-sdk-go v1.44.60 h1:KTTogelVR+4dWiIPl7eyxoxaJkziChON6/Y/hVfTipk=
+github.com/aws/aws-sdk-go v1.44.60/go.mod h1:y4AeaBuwd2Lk+GepC1E9v0qOiTws0MIWAX4oIKwKHZo=
 github.com/cenkalti/backoff v2.1.1+incompatible h1:tKJnvO2kl0zmb/jA5UKAt4VoEVw1qxKWjE/Bpp46npY=
 github.com/cenkalti/backoff v2.1.1+incompatible/go.mod h1:90ReRw6GdpyfrHakVjL/QHaoyV4aDUVVkXQJJJ3NXXM=
 github.com/cenkalti/backoff/v4 v4.1.2 h1:6Yo7N8UP2K6LWZnW94DLVSSrbobcWdVzAYOisuDPIFo=
