@@ -15,8 +15,8 @@ github.com/go-sql-driver/mysql v1.5.0/go.mod h1:DCzpHaOWr8IXmIStZouvnhqoel9Qv2LB
 github.com/gofrs/uuid v3.2.0+incompatible/go.mod h1:b2aQJv3Z4Fp6yNu3cdSllBxTCLRxnplIgP/c0N/04lM=
 github.com/golang/mock v1.4.4/go.mod h1:l3mdAwkq5BuhzHwde/uurv3sEJeZMXNpwsxVWU71h+4=
 github.com/guregu/dynamo v1.9.1/go.mod h1:nN6eZeNSiD92T5IVTmEhO6pRZblJZ8cQ+0e0dVFExjc=
-github.com/guregu/dynamo v1.18.3 h1:yEU0KBC2cukiN0mZZlcT9Tg/+CUQcAEWa0J9vx7SXQU=
-github.com/guregu/dynamo v1.18.3/go.mod h1:A0OqisWkmE7k8CZSA/gwT+iDhEmYBTcdXC1A17LpKH4=
+github.com/guregu/dynamo v1.19.0 h1:MA7KsSxmzGqd/xTddjqMAD0TyWcG6HOk5zoMOmjsxR8=
+github.com/guregu/dynamo v1.19.0/go.mod h1:A0OqisWkmE7k8CZSA/gwT+iDhEmYBTcdXC1A17LpKH4=
 github.com/jmespath/go-jmespath v0.3.0/go.mod h1:9QtRXoHjLGCJ5IBSaohpXITPlowMeeYCZ7fLUTSywik=
 github.com/jmespath/go-jmespath v0.4.0 h1:BEgLn5cpjn8UN1mAw4NjwDrS35OdebyEtFe+9YPoQUg=
 github.com/jmespath/go-jmespath v0.4.0/go.mod h1:T8mJZnbsbmF+m6zOOFylbeCJqk5+pHWvzYPziyZiYoo=
