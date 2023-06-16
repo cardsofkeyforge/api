@@ -21,6 +21,12 @@ jobs:
       with:
         go-version: 1.18
 
+    - name: Install AWS CLI
+      run: |
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        unzip awscliv2.zip
+        sudo ./aws/install
+
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -29,9 +35,7 @@ jobs:
         aws-region: eu-north-1
 
     - name: Update cloudformation API spec
-      uses: ItsKarma/aws-cli@v1.70.0
-      with:
-        args: s3 cp api/openapi.yaml s3://cards-keyforge/openapi/openapi-${{ github.sha }}.yaml
+      run: aws s3 cp api/openapi.yaml s3://cards-keyforge/openapi/openapi-${{ github.sha }}.yaml
 
     - name: Build
       run: make build_all
@@ -40,9 +44,7 @@ jobs:
       run: make zip_functions
 
     - name: Upload functions to S3
-      uses: ItsKarma/aws-cli@v1.70.0
-      with:
-        args: s3 cp build/ s3://cards-keyforge/functions/ --recursive --exclude "*" --include "*.zip"
+      run: aws s3 cp build/ s3://cards-keyforge/functions/ --recursive --exclude "*" --include "*.zip"
 
     - name: Deploy to AWS CloudFormation
       uses: aws-actions/aws-cloudformation-github-deploy@v1
