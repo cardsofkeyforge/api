@@ -1,7 +1,7 @@
 openapi: '3.0.3'
 info:
   title: Cards of Keyforge
-  version: '0.2'
+  version: '0.6'
   contact:
     email: dreuse@dreuse.dev | alfoltran@gmail.com
     name: dreuse | alfoltran
