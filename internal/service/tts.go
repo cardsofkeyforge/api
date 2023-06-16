@@ -16,6 +16,7 @@ import (
 var houseNames = map[string]string{
 	"Brobnar":       "Brobnar",
 	"Dis":           "Dis",
+	"Ekwidon":       "Ekwidon",
 	"Logos":         "Logos",
 	"Mars":          "Marte",
 	"Sanctum":       "Santuário",
@@ -33,7 +34,9 @@ var setCodes = map[int]string{
 	453:  "anomaly",
 	479:  "mm",
 	496:  "dt",
+	600:  "woe",
 	1001: "rotk",
+	1002: "tac",
 }
 
 func ImportDeck(id string, lang string, sleeve string) (*tts.ObjectTTS, error) {

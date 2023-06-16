@@ -14,6 +14,7 @@ import (
 var houses = []string{
 	"Brobnar",
 	"Dis",
+	"Ekwidon",
 	"Logos",
 	"Mars",
 	"Sanctum",

@@ -19,7 +19,9 @@ var setName = map[string]int{
 	"anomaly": 453,
 	"mm":      479,
 	"dt":      496,
+	"woe":     600,
 	"rotk":    1001,
+	"tac":     1002,
 }
 
 func handleRequest(event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
