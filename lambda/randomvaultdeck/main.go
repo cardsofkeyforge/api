@@ -11,7 +11,6 @@ import (
 	"strings"
 )
 
-/* 6 Sets, 2 Adventures and 1 Anomaly */
 var setName = map[string]int{
 	"all":     0,
 	"cota":    341,
