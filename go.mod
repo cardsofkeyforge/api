@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/aws/aws-lambda-go v1.41.0
-	github.com/aws/aws-sdk-go v1.44.318
+	github.com/aws/aws-sdk-go v1.44.319
 	github.com/guregu/dynamo v1.20.1
 	github.com/kadekutama/dynamodb v1.0.0
 	github.com/pkg/errors v0.9.1
