@@ -3,7 +3,7 @@ module keyforge-cards-backend
 go 1.18
 
 require (
-	github.com/aws/aws-lambda-go v1.42.0
+	github.com/aws/aws-lambda-go v1.43.0
 	github.com/aws/aws-sdk-go v1.49.7
 	github.com/guregu/dynamo v1.21.0
 	github.com/kadekutama/dynamodb v1.0.0
