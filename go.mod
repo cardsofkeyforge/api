@@ -1,6 +1,6 @@
 module keyforge-cards-backend
 
-go 1.18
+go 1.23
 
 require (
 	github.com/aws/aws-lambda-go v1.54.0
@@ -8,7 +8,7 @@ require (
 	github.com/guregu/dynamo v1.23.0
 	github.com/kadekutama/dynamodb v1.0.0
 	github.com/pkg/errors v0.9.1
-	github.com/sirupsen/logrus v1.9.4
+	github.com/sirupsen/logrus v1.10.1
 )
 
 require (
